@@ -21,12 +21,12 @@ const CartPage = () => {
 
   if (items.length === 0) {
     return (
-      <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
-        <div className="text-center py-12">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <h1 className="mb-8 text-3xl font-bold">Shopping Cart</h1>
+        <div className="py-12 text-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-24 w-24 mx-auto text-gray-300 mb-4"
+            className="mx-auto mb-4 size-24 text-gray-300"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -38,13 +38,13 @@ const CartPage = () => {
               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
-          <h2 className="text-2xl font-semibold mb-4">Your cart is empty</h2>
-          <p className="text-gray-500 mb-8">
+          <h2 className="mb-4 text-2xl font-semibold">Your cart is empty</h2>
+          <p className="mb-8 text-gray-500">
             Looks like you haven&apos;t added any products to your cart yet.
           </p>
           <Link
             href="/products"
-            className="bg-black text-white px-6 py-3 rounded-full hover:bg-gray-800 transition-colors duration-200"
+            className="rounded-full bg-black px-6 py-3 text-white transition-colors duration-200 hover:bg-gray-800"
           >
             Continue Shopping
           </Link>
@@ -54,10 +54,10 @@ const CartPage = () => {
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
+    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <h1 className="mb-8 text-3xl font-bold">Shopping Cart</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
           {/* Cart items */}
           <div className="space-y-4">
@@ -71,9 +71,9 @@ const CartPage = () => {
               return (
                 <div
                   key={product.id}
-                  className="bg-white rounded-lg shadow p-4 flex flex-col sm:flex-row gap-4 hover:shadow-md transition-shadow duration-200"
+                  className="flex flex-col gap-4 rounded-lg bg-white p-4 shadow transition-shadow duration-200 hover:shadow-md sm:flex-row"
                 >
-                  <div className="w-full sm:w-24 h-24 bg-gray-100 rounded-md overflow-hidden relative group">
+                  <div className="group relative h-24 w-full overflow-hidden rounded-md bg-gray-100 sm:w-24">
                     <Image
                       src={product.image}
                       alt={product.name}
@@ -83,19 +83,19 @@ const CartPage = () => {
                       priority
                     />
                   </div>
-                  <div className="flex-1 flex flex-col">
+                  <div className="flex flex-1 flex-col">
                     <div className="flex justify-between">
                       <h3 className="text-lg font-medium text-gray-900">
                         {product.name}
                       </h3>
                       <button
                         onClick={() => removeFromCart(product.id)}
-                        className="text-gray-400 hover:text-red-500 transition-colors duration-200"
+                        className="text-gray-400 transition-colors duration-200 hover:text-red-500"
                         aria-label="Remove item"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
+                          className="size-5"
                           viewBox="0 0 20 20"
                           fill="currentColor"
                         >
@@ -107,21 +107,21 @@ const CartPage = () => {
                         </svg>
                       </button>
                     </div>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="mt-1 text-sm text-gray-500">
                       {product.category}
                     </p>
-                    <div className="flex items-center justify-between mt-auto pt-2">
-                      <div className="flex items-center border rounded-md">
+                    <div className="mt-auto flex items-center justify-between pt-2">
+                      <div className="flex items-center rounded-md border">
                         <button
                           onClick={() =>
                             updateQuantity(product.id, item.quantity - 1)
                           }
                           disabled={item.quantity <= 1}
-                          className="px-2 py-1 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-2 py-1 text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           -
                         </button>
-                        <span className="px-2 py-1 border-x">
+                        <span className="border-x px-2 py-1">
                           {item.quantity}
                         </span>
                         <button
@@ -153,11 +153,11 @@ const CartPage = () => {
           <div className="mt-6 flex justify-between">
             <Link
               href="/products"
-              className="text-black hover:underline flex items-center"
+              className="flex items-center text-black hover:underline"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-1"
+                className="mr-1 size-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -182,9 +182,9 @@ const CartPage = () => {
 
         <div>
           {/* Order summary */}
-          <div className="bg-white rounded-lg shadow p-6 sticky top-4">
-            <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-            <div className="space-y-2 mb-4">
+          <div className="sticky top-4 rounded-lg bg-white p-6 shadow">
+            <h2 className="mb-4 text-xl font-semibold">Order Summary</h2>
+            <div className="mb-4 space-y-2">
               <div className="flex justify-between">
                 <span>Subtotal</span>
                 <span>${total.toFixed(2)}</span>
@@ -197,7 +197,7 @@ const CartPage = () => {
                 <span>Tax</span>
                 <span>${(total * 0.1).toFixed(2)}</span>
               </div>
-              <div className="border-t pt-2 mt-2 font-semibold flex justify-between">
+              <div className="mt-2 flex justify-between border-t pt-2 font-semibold">
                 <span>Total</span>
                 <span>${(total * 1.1).toFixed(2)}</span>
               </div>
@@ -205,14 +205,14 @@ const CartPage = () => {
             <button
               onClick={handleCheckout}
               disabled={isCheckingOut}
-              className={`w-full py-3 rounded-full text-white ${
+              className={`w-full rounded-full py-3 text-white ${
                 isCheckingOut ? 'bg-gray-400' : 'bg-black hover:bg-gray-800'
-              } transition-colors duration-200 flex justify-center items-center`}
+              } flex items-center justify-center transition-colors duration-200`}
             >
               {isCheckingOut ? (
                 <>
                   <svg
-                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    className="-ml-1 mr-2 size-4 animate-spin text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"

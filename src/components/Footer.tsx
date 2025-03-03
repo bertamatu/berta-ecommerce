@@ -3,16 +3,16 @@ import Link from 'next/link';
 const Footer = () => {
   return (
     <footer className="bg-white text-black">
-      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-black">BertaShop</h3>
+            <h3 className="mb-4 text-lg font-semibold text-black">BertaShop</h3>
             <p className="text-gray-800">
               Your one-stop shop for quality products.
             </p>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-black">
+            <h3 className="mb-4 text-lg font-semibold text-black">
               Quick Links
             </h3>
             <ul className="space-y-2">
@@ -40,7 +40,7 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-black">
+            <h3 className="mb-4 text-lg font-semibold text-black">
               Contact Info
             </h3>
             <ul className="space-y-2 text-gray-800">

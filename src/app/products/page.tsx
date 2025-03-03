@@ -118,7 +118,7 @@ function ProductsContent() {
     : allCategories;
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
+    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
       <div className="text-center">
         <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">
           {activeCategory
@@ -127,18 +127,18 @@ function ProductsContent() {
               ? `${activeMainCategory} Products`
               : 'All Products'}
         </h1>
-        <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
+        <p className="mx-auto mt-4 max-w-2xl text-xl text-gray-500">
           Browse our collection of high-quality products
         </p>
       </div>
 
       {/* Category filters */}
-      <div className="flex flex-wrap justify-center gap-2 mt-8">
+      <div className="mt-8 flex flex-wrap justify-center gap-2">
         {visibleCategories.map((category) => (
           <button
             key={category}
             onClick={() => handleCategoryFilter(category)}
-            className={`px-4 py-2 rounded-full text-sm font-medium ${
+            className={`rounded-full px-4 py-2 text-sm font-medium ${
               activeCategory === category
                 ? 'bg-blue-600 text-white'
                 : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
@@ -155,7 +155,7 @@ function ProductsContent() {
               setFilteredProducts(products);
               window.history.pushState({}, '', '/products');
             }}
-            className="px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-800 hover:bg-red-200 transition-colors duration-200"
+            className="rounded-full bg-red-100 px-4 py-2 text-sm font-medium text-red-800 transition-colors duration-200 hover:bg-red-200"
           >
             Clear Filters
           </button>
@@ -163,30 +163,30 @@ function ProductsContent() {
       </div>
 
       {/* Products grid */}
-      <div className="mt-12 grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product, index) => (
             <div
               key={product.id}
-              className="group relative bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+              className="group relative overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 hover:shadow-lg"
             >
-              <div className="relative w-full h-[250px]">
+              <div className="relative h-[250px] w-full">
                 <Image
                   src={product.image}
                   alt={product.name}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                  className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
                   priority={index < 4} // Prioritize loading the first 4 images
                 />
                 {product.discount > 0 && (
-                  <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                  <div className="absolute right-2 top-2 rounded bg-red-500 px-2 py-1 text-xs font-bold text-white">
                     {product.discount}% OFF
                   </div>
                 )}
               </div>
               <div className="p-4">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <h3 className="mb-2 text-lg font-medium text-gray-900">
                   <Link
                     href={`/products/${product.id}`}
                     className="hover:text-blue-600"
@@ -194,7 +194,7 @@ function ProductsContent() {
                     {product.name}
                   </Link>
                 </h3>
-                <p className="text-gray-500 text-sm mb-2 line-clamp-2">
+                <p className="mb-2 line-clamp-2 text-sm text-gray-500">
                   {product.description}
                 </p>
                 <div className="flex items-center justify-between">
@@ -219,19 +219,19 @@ function ProductsContent() {
                     )}
                   </div>
                   <div className="flex items-center">
-                    <span className="text-yellow-400 mr-1">★</span>
+                    <span className="mr-1 text-yellow-400">★</span>
                     <span className="text-sm text-gray-600">
                       {product.rating}
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center justify-between mt-2">
+                <div className="mt-2 flex items-center justify-between">
                   <button
                     onClick={() => handleAddToCart(product)}
                     className="text-gray-500 hover:text-gray-700"
                   >
                     <svg
-                      className="h-6 w-6"
+                      className="size-6"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -249,7 +249,7 @@ function ProductsContent() {
             </div>
           ))
         ) : (
-          <div className="col-span-full text-center py-12">
+          <div className="col-span-full py-12 text-center">
             <h3 className="text-xl font-medium text-gray-900">
               No products found
             </h3>
@@ -266,7 +266,9 @@ function ProductsContent() {
 // Main component with Suspense boundary
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center">Loading products...</div>}>
+    <Suspense
+      fallback={<div className="p-8 text-center">Loading products...</div>}
+    >
       <ProductsContent />
     </Suspense>
   );

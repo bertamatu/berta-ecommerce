@@ -23,7 +23,7 @@ export default function ProductDetailPage() {
 
   if (!product) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <p className="text-center text-xl">Product not found</p>
       </div>
     );
@@ -53,11 +53,11 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         {/* Product Image */}
-        <div className="bg-white rounded-lg overflow-hidden shadow-sm">
-          <div className="relative w-full h-[400px] md:h-[500px]">
+        <div className="overflow-hidden rounded-lg bg-white shadow-sm">
+          <div className="relative h-[400px] w-full md:h-[500px]">
             <Image
               src={product.image}
               alt={product.name}
@@ -67,7 +67,7 @@ export default function ProductDetailPage() {
               priority
             />
             {product.discount > 0 && (
-              <div className="absolute top-4 right-4 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+              <div className="absolute right-4 top-4 rounded-full bg-red-500 px-3 py-1 text-sm font-bold text-white">
                 {product.discount}% OFF
               </div>
             )}
@@ -75,11 +75,11 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Product Details */}
-        <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="rounded-lg bg-white p-6 shadow-sm">
+          <h1 className="mb-2 text-3xl font-bold text-gray-900">
             {product.name}
           </h1>
-          <p className="text-gray-500 mb-4">{product.category}</p>
+          <p className="mb-4 text-gray-500">{product.category}</p>
 
           {/* Pricing */}
           <div className="mb-6">
@@ -100,12 +100,12 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Rating */}
-          <div className="flex items-center mb-6">
+          <div className="mb-6 flex items-center">
             <div className="flex items-center">
               {[...Array(5)].map((_, i) => (
                 <svg
                   key={i}
-                  className={`w-5 h-5 ${
+                  className={`size-5 ${
                     i < Math.floor(product.rating)
                       ? 'text-yellow-400'
                       : 'text-gray-300'
@@ -128,17 +128,17 @@ export default function ProductDetailPage() {
 
           {/* Description */}
           <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-2">Description</h2>
+            <h2 className="mb-2 text-lg font-semibold">Description</h2>
             <p className="text-gray-600">{product.description}</p>
           </div>
 
           {/* Quantity Selector */}
           <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-2">Quantity</h2>
+            <h2 className="mb-2 text-lg font-semibold">Quantity</h2>
             <div className="flex items-center">
               <button
                 onClick={decrementQuantity}
-                className="p-2 border border-gray-300 rounded-l-md"
+                className="rounded-l-md border border-gray-300 p-2"
                 disabled={quantity <= 1}
               >
                 -
@@ -149,11 +149,11 @@ export default function ProductDetailPage() {
                 max={product.stock}
                 value={quantity}
                 onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                className="p-2 w-16 text-center border-y border-gray-300"
+                className="w-16 border-y border-gray-300 p-2 text-center"
               />
               <button
                 onClick={incrementQuantity}
-                className="p-2 border border-gray-300 rounded-r-md"
+                className="rounded-r-md border border-gray-300 p-2"
                 disabled={quantity >= product.stock}
               >
                 +
@@ -164,7 +164,7 @@ export default function ProductDetailPage() {
           {/* Add to Cart Button */}
           <button
             onClick={handleAddToCart}
-            className="w-full bg-black text-white py-3 px-6 rounded-full hover:bg-gray-800 transition-colors duration-200"
+            className="w-full rounded-full bg-black px-6 py-3 text-white transition-colors duration-200 hover:bg-gray-800"
             disabled={product.stock === 0}
           >
             {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}

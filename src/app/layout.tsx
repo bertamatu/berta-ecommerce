@@ -18,9 +18,9 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
     <html lang="en">
       <body className={inter.className}>
         <CartProvider>
-          <div className="min-h-screen flex flex-col">
+          <div className="flex min-h-screen flex-col">
             <Navbar />
-            <main className="flex-1 md:mt-0 mb-14 md:mb-0">{children}</main>
+            <main className="mb-14 flex-1 md:my-0">{children}</main>
             <Footer />
           </div>
         </CartProvider>

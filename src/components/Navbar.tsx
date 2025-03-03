@@ -67,7 +67,7 @@ const IconButton = ({
   return (
     <Link
       href={href}
-      className={`text-gray-700 hover:text-gray-900 transition-colors duration-200 relative group ${
+      className={`group relative text-gray-700 transition-colors duration-200 hover:text-gray-900 ${
         isActive ? 'text-blue-600' : ''
       }`}
       aria-label={label}
@@ -75,12 +75,12 @@ const IconButton = ({
       <div className="relative">
         {children}
         {badge !== undefined && badge > 0 && (
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+          <span className="absolute -right-2 -top-2 flex size-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
             {badge > 99 ? '99+' : badge}
           </span>
         )}
       </div>
-      <span className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+      <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-xs opacity-0 transition-opacity duration-200 group-hover:opacity-100">
         {label}
       </span>
     </Link>
@@ -138,29 +138,29 @@ const Navbar = () => {
   };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
-        <div className="w-full py-6 flex items-center justify-between">
+    <header className="sticky top-0 z-50 bg-white shadow-sm">
+      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
+        <div className="flex w-full items-center justify-between py-6">
           <div className="flex items-center">
             <Link href="/" className="text-2xl font-bold text-gray-900">
               {WEB_APP_TITLE}
             </Link>
-            <div className="hidden ml-10 space-x-8 lg:block">
+            <div className="ml-10 hidden space-x-8 lg:block">
               {categories.map((category) => (
                 <div
                   key={category.name}
-                  className="relative inline-block text-left group"
+                  className="group relative inline-block text-left"
                 >
                   <div className="flex items-center">
                     <button
                       onClick={() => toggleSubmenu(category.name)}
-                      className={`text-base font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200 flex items-center ${
+                      className={`flex items-center text-base font-medium text-gray-700 transition-colors duration-200 hover:text-gray-900 ${
                         pathname === category.href ? 'text-gray-900' : ''
                       }`}
                     >
                       {category.name}
                       <svg
-                        className={`w-5 h-5 ml-1 transition-transform duration-200 ${
+                        className={`ml-1 size-5 transition-transform duration-200 ${
                           activeSubmenu === category.name ? 'rotate-180' : ''
                         }`}
                         xmlns="http://www.w3.org/2000/svg"
@@ -178,7 +178,7 @@ const Navbar = () => {
                   </div>
                   {/* Submenu */}
                   {activeSubmenu === category.name && (
-                    <div className="absolute z-10 mt-2 w-48 rounded-md shadow-lg bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <div className="absolute z-10 mt-2 w-48 rounded-md bg-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
                       <div
                         className="py-1"
                         role="menu"
@@ -188,7 +188,7 @@ const Navbar = () => {
                           <Link
                             key={item.name}
                             href={item.href}
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+                            className="block px-4 py-2 text-sm text-gray-700 transition-colors duration-200 hover:bg-gray-100"
                             role="menuitem"
                             onClick={() => {
                               setActiveSubmenu(null);
@@ -214,7 +214,7 @@ const Navbar = () => {
                 badge={icon.label === 'Cart' ? itemCount : undefined}
               >
                 <svg
-                  className="h-6 w-6 hover:text-gray-900 transition-colors duration-200"
+                  className="size-6 transition-colors duration-200 hover:text-gray-900"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
