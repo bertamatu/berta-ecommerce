@@ -4,7 +4,7 @@ import Link from 'next/link';
 // Type definitions
 type CategoryGridProps = {
   title: string;
-  categories: string[];
+  categories: readonly string[] | string[];
   mainCategory: string;
 };
 

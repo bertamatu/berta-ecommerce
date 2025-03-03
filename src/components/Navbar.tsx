@@ -142,7 +142,7 @@ const Navbar = () => {
             <Link href="/" className="text-2xl font-bold text-gray-900">
               {WEB_APP_TITLE}
             </Link>
-            <div className="ml-10 hidden space-x-8 lg:block">
+            <div className="ml-10 hidden space-x-8 lg:block" ref={menuRef}>
               {/* Using destructuring in map callback */}
               {categories.map(({ name, href, submenu }) => (
                 <div
@@ -174,32 +174,36 @@ const Navbar = () => {
                       </svg>
                     </button>
                   </div>
-                  {/* Submenu with conditional rendering */}
-                  {activeSubmenu === name && (
-                    <div className="absolute z-10 mt-2 w-48 rounded-md bg-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
-                      <div
-                        className="py-1"
-                        role="menu"
-                        aria-orientation="vertical"
-                      >
-                        {/* Using destructuring in map callback */}
-                        {submenu.map(({ name: itemName, href: itemHref }) => (
-                          <Link
-                            key={itemName}
-                            href={itemHref}
-                            className="block px-4 py-2 text-sm text-gray-700 transition-colors duration-200 hover:bg-gray-100"
-                            role="menuitem"
-                            onClick={() => {
-                              setActiveSubmenu(null);
-                              setIsMenuOpen(false);
-                            }}
-                          >
-                            {itemName}
-                          </Link>
-                        ))}
-                      </div>
+                  {/* Fixed submenu rendering to prevent double flicker */}
+                  <div
+                    className={`absolute z-10 mt-2 w-48 rounded-md bg-white shadow-lg transition-opacity duration-200 ${
+                      activeSubmenu === name
+                        ? 'opacity-100'
+                        : 'pointer-events-none opacity-0'
+                    }`}
+                  >
+                    <div
+                      className="py-1"
+                      role="menu"
+                      aria-orientation="vertical"
+                    >
+                      {/* Using destructuring in map callback */}
+                      {submenu.map(({ name: itemName, href: itemHref }) => (
+                        <Link
+                          key={itemName}
+                          href={itemHref}
+                          className="block px-4 py-2 text-sm text-gray-700 transition-colors duration-200 hover:bg-gray-100"
+                          role="menuitem"
+                          onClick={() => {
+                            setActiveSubmenu(null);
+                            setIsMenuOpen(false);
+                          }}
+                        >
+                          {itemName}
+                        </Link>
+                      ))}
                     </div>
-                  )}
+                  </div>
                 </div>
               ))}
             </div>
