@@ -71,24 +71,27 @@ const CartPage = () => {
               return (
                 <div
                   key={product.id}
-                  className="bg-white rounded-lg shadow p-4 flex flex-col sm:flex-row gap-4"
+                  className="bg-white rounded-lg shadow p-4 flex flex-col sm:flex-row gap-4 hover:shadow-md transition-shadow duration-200"
                 >
-                  <div className="w-full sm:w-24 h-24 bg-gray-100 rounded-md overflow-hidden relative">
+                  <div className="w-full sm:w-24 h-24 bg-gray-100 rounded-md overflow-hidden relative group">
                     <Image
                       src={product.image}
                       alt={product.name}
                       fill
                       sizes="(max-width: 640px) 100vw, 96px"
-                      className="object-contain"
+                      className="object-cover object-center transition-transform duration-300 group-hover:scale-110"
                       priority
                     />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 flex flex-col">
                     <div className="flex justify-between">
-                      <h3 className="font-medium">{product.name}</h3>
+                      <h3 className="text-lg font-medium text-gray-900">
+                        {product.name}
+                      </h3>
                       <button
                         onClick={() => removeFromCart(product.id)}
-                        className="text-gray-400 hover:text-red-500"
+                        className="text-gray-400 hover:text-red-500 transition-colors duration-200"
+                        aria-label="Remove item"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -104,48 +107,39 @@ const CartPage = () => {
                         </svg>
                       </button>
                     </div>
-                    <p className="text-sm text-gray-500">{product.category}</p>
-                    <div className="mt-2 flex justify-between items-center">
-                      <div className="flex items-center">
+                    <p className="text-sm text-gray-500 mt-1">
+                      {product.category}
+                    </p>
+                    <div className="flex items-center justify-between mt-auto pt-2">
+                      <div className="flex items-center border rounded-md">
                         <button
                           onClick={() =>
                             updateQuantity(product.id, item.quantity - 1)
                           }
-                          className="p-1 border border-gray-300 rounded-l-md"
                           disabled={item.quantity <= 1}
+                          className="px-2 py-1 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           -
                         </button>
-                        <input
-                          type="number"
-                          min="1"
-                          max={product.stock}
-                          value={item.quantity}
-                          onChange={(e) =>
-                            updateQuantity(
-                              product.id,
-                              parseInt(e.target.value) || 1
-                            )
-                          }
-                          className="p-1 w-12 text-center border-y border-gray-300"
-                        />
+                        <span className="px-2 py-1 border-x">
+                          {item.quantity}
+                        </span>
                         <button
                           onClick={() =>
                             updateQuantity(product.id, item.quantity + 1)
                           }
-                          className="p-1 border border-gray-300 rounded-r-md"
-                          disabled={item.quantity >= product.stock}
+                          className="px-2 py-1 text-gray-600 hover:bg-gray-100"
                         >
                           +
                         </button>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium">
+                        <p className="text-lg font-medium text-gray-900">
                           ${(discountedPrice * item.quantity).toFixed(2)}
                         </p>
                         {product.discount > 0 && (
-                          <p className="text-sm text-gray-500 line-through">
-                            ${(product.price * item.quantity).toFixed(2)}
+                          <p className="text-sm text-red-500">
+                            {product.discount}% OFF
                           </p>
                         )}
                       </div>
