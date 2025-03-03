@@ -6,27 +6,27 @@ export const ROUTES = {
   INTERIOR: {
     path: '/interior',
     label: 'INTERIOR',
-    categories: ['Living Room', 'Bedroom', 'Kitchen', 'Bathroom', 'Office']
+    categories: ['Living Room', 'Bedroom', 'Kitchen', 'Bathroom', 'Office'],
   },
   GARDEN: {
     path: '/garden-patio',
     label: 'GARDEN & PATIO',
-    categories: ['Furniture', 'Plants', 'Decor', 'Tools', 'Lighting']
+    categories: ['Furniture', 'Plants', 'Decor', 'Tools', 'Lighting'],
   },
   SEARCH: {
     path: '/search',
-    label: 'Search'
+    label: 'Search',
   },
   ACCOUNT: {
     path: '/account',
-    label: 'Account'
+    label: 'Account',
   },
   WISHLIST: {
     path: '/wishlist',
-    label: 'Wishlist'
+    label: 'Wishlist',
   },
   CART: {
     path: '/cart',
-    label: 'Shopping Cart'
-  }
+    label: 'Shopping Cart',
+  },
 } as const;

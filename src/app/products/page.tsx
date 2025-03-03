@@ -13,7 +13,9 @@ const ProductsPage = () => {
   return (
     <main className="max-w-7xl mx-auto px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Our Products</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+          Our Products
+        </h1>
         <div className="flex flex-col sm:flex-row gap-4">
           <select className="w-full sm:w-auto rounded-full px-4 py-2 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option>All Categories</option>
@@ -38,8 +40,12 @@ const ProductsPage = () => {
                 </div>
               </figure>
               <div className="px-2">
-                <span className="text-sm text-blue-600 font-medium">{product.category}</span>
-                <h2 className="text-lg font-semibold text-gray-900 mt-1">{product.name}</h2>
+                <span className="text-sm text-blue-600 font-medium">
+                  {product.category}
+                </span>
+                <h2 className="text-lg font-semibold text-gray-900 mt-1">
+                  {product.name}
+                </h2>
                 <div className="flex items-center justify-between mt-2">
                   <p className="text-gray-900 font-medium">${product.price}</p>
                   <button className="bg-black text-white px-4 py-2 rounded-full sm:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -55,4 +61,4 @@ const ProductsPage = () => {
   );
 };
 
-export default ProductsPage; 
+export default ProductsPage;
