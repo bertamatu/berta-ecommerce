@@ -28,6 +28,12 @@ export interface Address {
   country: string;
 }
 
+// Using a reusable interface for timestamps
+export interface TimeStamped {
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // Cart Types
 export interface CartItem {
   productId: number;
@@ -35,39 +41,45 @@ export interface CartItem {
   product?: Product;
 }
 
-export interface Cart {
+// Using type alias with intersection types
+export type Cart = {
   id: number;
   userId: number;
   items: CartItem[];
-  createdAt: Date;
-  updatedAt: Date;
-}
+} & TimeStamped;
+
+// Using const assertions for better type safety with string literals
+export const OrderStatus = {
+  PENDING: 'pending',
+  PROCESSING: 'processing',
+  SHIPPED: 'shipped',
+  DELIVERED: 'delivered',
+  CANCELLED: 'cancelled',
+} as const;
+
+// Using a mapped type to create the enum from the object
+export type OrderStatusType = (typeof OrderStatus)[keyof typeof OrderStatus];
+
+export const PaymentMethod = {
+  CREDIT_CARD: 'credit_card',
+  PAYPAL: 'paypal',
+  BANK_TRANSFER: 'bank_transfer',
+} as const;
+
+export type PaymentMethodType =
+  (typeof PaymentMethod)[keyof typeof PaymentMethod];
 
 // Order Types
-export interface Order {
+// Using type alias with intersection types
+export type Order = {
   id: number;
   userId: number;
   items: CartItem[];
   total: number;
-  status: OrderStatus;
+  status: OrderStatusType;
   shippingAddress: Address;
-  paymentMethod: PaymentMethod;
-  createdAt: Date;
-}
-
-export enum OrderStatus {
-  PENDING = 'pending',
-  PROCESSING = 'processing',
-  SHIPPED = 'shipped',
-  DELIVERED = 'delivered',
-  CANCELLED = 'cancelled',
-}
-
-export enum PaymentMethod {
-  CREDIT_CARD = 'credit_card',
-  PAYPAL = 'paypal',
-  BANK_TRANSFER = 'bank_transfer',
-}
+  paymentMethod: PaymentMethodType;
+} & Pick<TimeStamped, 'createdAt'>;
 
 // Navigation Types
 export interface NavItem {
@@ -77,11 +89,11 @@ export interface NavItem {
 }
 
 // Review Types
-export interface Review {
+// Using intersection types
+export type Review = {
   id: number;
   productId: number;
   userId: number;
   rating: number;
   comment: string;
-  createdAt: Date;
-}
+} & Pick<TimeStamped, 'createdAt'>;
