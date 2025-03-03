@@ -21,19 +21,19 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export function useCart() {
+export const useCart = () => {
   const context = useContext(CartContext);
   if (context === undefined) {
     throw new Error('useCart must be used within a CartProvider');
   }
   return context;
-}
+};
 
 interface CartProviderProps {
   children: ReactNode;
 }
 
-export function CartProvider({ children }: CartProviderProps) {
+export const CartProvider = ({ children }: CartProviderProps) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [itemCount, setItemCount] = useState(0);
   const [total, setTotal] = useState(0);
@@ -60,8 +60,9 @@ export function CartProvider({ children }: CartProviderProps) {
       setItemCount(count);
 
       const cartTotal = items.reduce((sum, item) => {
-        const price = item.product?.price || 0;
-        const discount = item.product?.discount || 0;
+        // Using nullish coalescing (??) instead of logical OR (||)
+        const price = item.product?.price ?? 0;
+        const discount = item.product?.discount ?? 0;
         const discountedPrice =
           discount > 0 ? price * (1 - discount / 100) : price;
         return sum + discountedPrice * item.quantity;
@@ -80,12 +81,15 @@ export function CartProvider({ children }: CartProviderProps) {
       );
 
       if (existingItemIndex >= 0) {
-        // Update quantity of existing item
-        const updatedItems = [...prevItems];
-        updatedItems[existingItemIndex].quantity += quantity;
-        return updatedItems;
+        // Update quantity of existing item using map with spread operator
+        // Cleaner item updates using map with spread operator
+        return prevItems.map((item, index) =>
+          index === existingItemIndex
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
       } else {
-        // Add new item
+        // Add new item using spread operator
         return [...prevItems, { productId: product.id, quantity, product }];
       }
     });
@@ -114,6 +118,8 @@ export function CartProvider({ children }: CartProviderProps) {
     setItems([]);
   };
 
+  // Using object property shorthand
+  // Cleaner object creation using object property shorthand
   const value = {
     items,
     addToCart,
@@ -125,4 +131,4 @@ export function CartProvider({ children }: CartProviderProps) {
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
-}
+};

@@ -3,30 +3,38 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { WEB_APP_DESCRIPTION, WEB_APP_TITLE } from './Constants';
+import { WEB_APP_TITLE, WEB_APP_DESCRIPTION } from './Constants';
 import { CartProvider } from '@/contexts/CartContext';
 
+// Font configuration - must be assigned to a variable directly
 const inter = Inter({ subsets: ['latin'] });
 
+// Using object property shorthand for metadata
 export const metadata: Metadata = {
   title: WEB_APP_TITLE,
   description: WEB_APP_DESCRIPTION,
 };
 
-const RootLayout = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <html lang="en">
-      <body className={inter.className}>
-        <CartProvider>
-          <div className="min-h-screen flex flex-col">
-            <Navbar />
-            <main className="flex-1 md:mt-0 mb-14 md:mb-0">{children}</main>
-            <Footer />
-          </div>
-        </CartProvider>
-      </body>
-    </html>
-  );
-};
+// Using destructuring in function parameters
+const RootLayout = ({ children }: { children: React.ReactNode }) => (
+  <html lang="en">
+    <head>
+      {/* Adding Material Icons for the contact page */}
+      <link
+        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet"
+      />
+    </head>
+    <body className={inter.className}>
+      <CartProvider>
+        <div className="flex min-h-screen flex-col">
+          <Navbar />
+          <main className="mb-14 flex-1 md:my-0">{children}</main>
+          <Footer />
+        </div>
+      </CartProvider>
+    </body>
+  </html>
+);
 
 export default RootLayout;

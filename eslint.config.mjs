@@ -9,6 +9,7 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
+// Import plugins using dynamic import to avoid ESM/CJS issues
 const eslintConfig = [
   {
     ignores: [
@@ -35,6 +36,15 @@ const eslintConfig = [
       '@typescript-eslint/no-unsafe-function-type': 'warn',
       '@typescript-eslint/no-require-imports': 'warn',
     },
+  },
+  // TailwindCSS rules
+  ...compat.extends('plugin:tailwindcss/recommended'),
+  // Testing Library rules
+  ...compat.extends('plugin:testing-library/react'),
+  // Cypress rules
+  {
+    files: ['cypress/**/*.{js,jsx,ts,tsx}', '**/*.cy.{js,jsx,ts,tsx}'],
+    ...compat.extends('plugin:cypress/recommended'),
   },
 ];
 
