@@ -54,14 +54,13 @@ jest.mock('next/navigation', () => ({
 // Mock next/image
 jest.mock('next/image', () => ({
   __esModule: true,
-  // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
   default: (props) => {
     // Ensure alt attribute is present
     const imgProps = { ...props };
     if (!imgProps.alt && imgProps.alt !== '') {
       imgProps.alt = ''; // Default to empty alt for decorative images
     }
-    // eslint-disable-next-line react/react-in-jsx-scope, @next/next/no-img-element, jsx-a11y/alt-text
+    // eslint-disable-next-line react/react-in-jsx-scope, jsx-a11y/alt-text, @next/next/no-img-element
     return <img {...imgProps} />;
   },
 }));
