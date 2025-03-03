@@ -70,7 +70,7 @@ const FormField = ({
 );
 
 // Contact info item component
-const ContactInfoItem = ({
+export const ContactInfoItem = ({
   icon,
   title,
   details,
