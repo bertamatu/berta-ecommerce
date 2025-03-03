@@ -5,21 +5,22 @@ import { useParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { Product } from '@/types';
+import Image from 'next/image';
 
 export default function ProductDetailPage() {
   const params = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
-  
+
   useEffect(() => {
     if (params.id) {
       const productId = parseInt(params.id as string);
-      const foundProduct = products.find(p => p.id === productId);
+      const foundProduct = products.find((p) => p.id === productId);
       setProduct(foundProduct || null);
     }
   }, [params.id]);
-  
+
   if (!product) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
@@ -27,15 +28,16 @@ export default function ProductDetailPage() {
       </div>
     );
   }
-  
+
   // Calculate discounted price if applicable
-  const discountedPrice = product.discount > 0 
-    ? product.price * (1 - product.discount / 100) 
-    : null;
+  const discountedPrice =
+    product.discount > 0 ? product.price * (1 - product.discount / 100) : null;
 
   const handleAddToCart = () => {
     addToCart(product, quantity);
-    alert(`Added ${quantity} ${product.name}${quantity > 1 ? 's' : ''} to cart`);
+    alert(
+      `Added ${quantity} ${product.name}${quantity > 1 ? 's' : ''} to cart`
+    );
   };
 
   const incrementQuantity = () => {
@@ -55,11 +57,14 @@ export default function ProductDetailPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Product Image */}
         <div className="bg-white rounded-lg overflow-hidden shadow-sm">
-          <div className="relative aspect-w-1 aspect-h-1 bg-gray-200">
-            <img
+          <div className="relative w-full h-[400px] md:h-[500px]">
+            <Image
               src={product.image}
               alt={product.name}
-              className="w-full h-full object-cover"
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover object-center"
+              priority
             />
             {product.discount > 0 && (
               <div className="absolute top-4 right-4 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full">
@@ -71,21 +76,29 @@ export default function ProductDetailPage() {
 
         {/* Product Details */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {product.name}
+          </h1>
           <p className="text-gray-500 mb-4">{product.category}</p>
-          
+
           {/* Pricing */}
           <div className="mb-6">
             {discountedPrice ? (
               <div className="flex items-center">
-                <span className="text-3xl font-bold text-gray-900">${discountedPrice.toFixed(2)}</span>
-                <span className="ml-2 text-lg text-gray-500 line-through">${product.price.toFixed(2)}</span>
+                <span className="text-3xl font-bold text-gray-900">
+                  ${discountedPrice.toFixed(2)}
+                </span>
+                <span className="ml-2 text-lg text-gray-500 line-through">
+                  ${product.price.toFixed(2)}
+                </span>
               </div>
             ) : (
-              <span className="text-3xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
+              <span className="text-3xl font-bold text-gray-900">
+                ${product.price.toFixed(2)}
+              </span>
             )}
           </div>
-          
+
           {/* Rating */}
           <div className="flex items-center mb-6">
             <div className="flex items-center">
@@ -93,7 +106,9 @@ export default function ProductDetailPage() {
                 <svg
                   key={i}
                   className={`w-5 h-5 ${
-                    i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'
+                    i < Math.floor(product.rating)
+                      ? 'text-yellow-400'
+                      : 'text-gray-300'
                   }`}
                   fill="currentColor"
                   viewBox="0 0 20 20"
@@ -104,17 +119,19 @@ export default function ProductDetailPage() {
               <span className="ml-2 text-gray-600">{product.rating} stars</span>
             </div>
             <span className="mx-2 text-gray-300">|</span>
-            <span className={`${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <span
+              className={`${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}
+            >
               {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
             </span>
           </div>
-          
+
           {/* Description */}
           <div className="mb-6">
             <h2 className="text-lg font-semibold mb-2">Description</h2>
             <p className="text-gray-600">{product.description}</p>
           </div>
-          
+
           {/* Quantity Selector */}
           <div className="mb-6">
             <h2 className="text-lg font-semibold mb-2">Quantity</h2>
@@ -143,7 +160,7 @@ export default function ProductDetailPage() {
               </button>
             </div>
           </div>
-          
+
           {/* Add to Cart Button */}
           <button
             onClick={handleAddToCart}

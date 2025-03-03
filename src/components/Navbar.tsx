@@ -2,12 +2,29 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { WEB_APP_TITLE, ROUTES } from '@/app/Constants';
+import { useCart } from '@/contexts/CartContext';
 
 const categories = [
-  { name: ROUTES.INTERIOR.label, href: ROUTES.INTERIOR.path },
-  { name: ROUTES.GARDEN.label, href: ROUTES.GARDEN.path },
+  {
+    name: ROUTES.INTERIOR.label,
+    href: '/products?mainCategory=INTERIOR',
+    defaultCategory: 'INTERIOR',
+    submenu: ROUTES.INTERIOR.categories.map((cat) => ({
+      name: cat,
+      href: `/products?category=${encodeURIComponent(cat)}`,
+    })),
+  },
+  {
+    name: ROUTES.GARDEN.label,
+    href: '/products?mainCategory=GARDEN',
+    defaultCategory: 'GARDEN',
+    submenu: ROUTES.GARDEN.categories.map((cat) => ({
+      name: cat,
+      href: `/products?category=${encodeURIComponent(cat)}`,
+    })),
+  },
 ];
 
 const iconPaths = [
@@ -37,10 +54,12 @@ const IconButton = ({
   children,
   href,
   label,
+  badge,
 }: {
   children: React.ReactNode;
   href: string;
   label: string;
+  badge?: number;
 }) => {
   const pathname = usePathname();
   const isActive = pathname === href;
@@ -53,7 +72,14 @@ const IconButton = ({
       }`}
       aria-label={label}
     >
-      {children}
+      <div className="relative">
+        {children}
+        {badge !== undefined && badge > 0 && (
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+            {badge > 99 ? '99+' : badge}
+          </span>
+        )}
+      </div>
       <span className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         {label}
       </span>
@@ -63,160 +89,144 @@ const IconButton = ({
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const router = useRouter();
+  const { itemCount } = useCart();
 
-  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsMenuOpen(false);
+        setActiveSubmenu(null);
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   // Close menu when route changes
   useEffect(() => {
     setIsMenuOpen(false);
+    setActiveSubmenu(null);
   }, [pathname]);
 
+  const _toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+    if (isMenuOpen) {
+      setActiveSubmenu(null);
+    }
+  };
+
+  const toggleSubmenu = (category: string) => {
+    if (activeSubmenu === category) {
+      setActiveSubmenu(null);
+    } else {
+      setActiveSubmenu(category);
+    }
+  };
+
+  const _handleCategoryClick = (category: (typeof categories)[0]) => {
+    // Navigate to the category page with the default filter
+    router.push(category.href);
+    // Close the submenu
+    setActiveSubmenu(null);
+  };
+
   return (
-    <header>
-      {/* Desktop Navigation */}
-      <nav className="hidden md:block bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <Link
-              href="/"
-              className="text-2xl font-bold hover:opacity-80 transition-opacity duration-200"
-            >
-              {/* Replace with your logo */}
-              {/* <Image src="/logo.png" alt={WEB_APP_TITLE} width={120} height={40} /> */}
+    <header className="bg-white shadow-sm sticky top-0 z-50">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
+        <div className="w-full py-6 flex items-center justify-between">
+          <div className="flex items-center">
+            <Link href="/" className="text-2xl font-bold text-gray-900">
               {WEB_APP_TITLE}
             </Link>
-
-            <div className="hidden lg:flex items-center space-x-8">
+            <div className="hidden ml-10 space-x-8 lg:block">
               {categories.map((category) => (
-                <Link
+                <div
                   key={category.name}
-                  href={category.href}
-                  className={`text-gray-700 hover:text-gray-900 transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-600 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 ${
-                    pathname === category.href
-                      ? 'text-blue-600 after:scale-x-100'
-                      : ''
-                  }`}
+                  className="relative inline-block text-left group"
                 >
-                  {category.name}
-                </Link>
-              ))}
-            </div>
-
-            <div className="flex items-center space-x-8">
-              {iconPaths.map((icon, index) => (
-                <IconButton key={index} href={icon.href} label={icon.label}>
-                  <svg
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d={icon.path}
-                    />
-                  </svg>
-                </IconButton>
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => toggleSubmenu(category.name)}
+                      className={`text-base font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200 flex items-center ${
+                        pathname === category.href ? 'text-gray-900' : ''
+                      }`}
+                    >
+                      {category.name}
+                      <svg
+                        className={`w-5 h-5 ml-1 transition-transform duration-200 ${
+                          activeSubmenu === category.name ? 'rotate-180' : ''
+                        }`}
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  {/* Submenu */}
+                  {activeSubmenu === category.name && (
+                    <div className="absolute z-10 mt-2 w-48 rounded-md shadow-lg bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <div
+                        className="py-1"
+                        role="menu"
+                        aria-orientation="vertical"
+                      >
+                        {category.submenu.map((item) => (
+                          <Link
+                            key={item.name}
+                            href={item.href}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+                            role="menuitem"
+                            onClick={() => {
+                              setActiveSubmenu(null);
+                              setIsMenuOpen(false);
+                            }}
+                          >
+                            {item.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </div>
-        </div>
-      </nav>
-
-      {/* Mobile Navigation */}
-      <nav className="md:hidden" ref={menuRef}>
-        <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-100 z-50">
-          <div className="flex items-center justify-between px-4 h-14">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-gray-900 transition-colors duration-200"
-              aria-label="Toggle menu"
-            >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+          <div className="flex items-center space-x-8">
+            {iconPaths.map((icon, index) => (
+              <IconButton
+                key={index}
+                href={icon.href}
+                label={icon.label}
+                badge={icon.label === 'Cart' ? itemCount : undefined}
               >
-                {isMenuOpen ? (
+                <svg
+                  className="h-6 w-6 hover:text-gray-900 transition-colors duration-200"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
+                    d={icon.path}
                   />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                )}
-              </svg>
-            </button>
-            <Link href="/" className="text-xl font-bold">
-              {WEB_APP_TITLE}
-            </Link>
-            <div className="flex items-center space-x-4">
-              {iconPaths.slice(-2).map((icon, index) => (
-                <IconButton key={index} href={icon.href} label={icon.label}>
-                  <svg
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d={icon.path}
-                    />
-                  </svg>
-                </IconButton>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        <div
-          className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ${
-            isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-          }`}
-          onClick={() => setIsMenuOpen(false)}
-        />
-        <div
-          className={`fixed top-14 left-0 bottom-0 w-64 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
-            isMenuOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
-        >
-          <div className="p-4 space-y-4">
-            {categories.map((category) => (
-              <Link
-                key={category.name}
-                href={category.href}
-                className={`block py-2 text-gray-700 hover:text-gray-900 transition-colors duration-200 ${
-                  pathname === category.href ? 'text-blue-600 font-medium' : ''
-                }`}
-              >
-                {category.name}
-              </Link>
+                </svg>
+              </IconButton>
             ))}
           </div>
         </div>

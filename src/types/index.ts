@@ -5,6 +5,7 @@ export interface Product {
   price: number;
   image: string;
   category: string;
+  mainCategory: string;
   description: string;
   rating: number;
   stock: number;
@@ -59,13 +60,13 @@ export enum OrderStatus {
   PROCESSING = 'processing',
   SHIPPED = 'shipped',
   DELIVERED = 'delivered',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 export enum PaymentMethod {
   CREDIT_CARD = 'credit_card',
   PAYPAL = 'paypal',
-  BANK_TRANSFER = 'bank_transfer'
+  BANK_TRANSFER = 'bank_transfer',
 }
 
 // Navigation Types
