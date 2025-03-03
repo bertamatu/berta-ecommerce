@@ -1,5 +1,6 @@
 import { Product } from '@/types';
 
+// Application constants
 export const WEB_APP_TITLE = 'B-EC';
 export const WEB_APP_DESCRIPTION =
   'B-EC is a platform for buying and selling products online';
