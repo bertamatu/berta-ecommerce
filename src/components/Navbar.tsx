@@ -84,7 +84,10 @@ const IconButton = ({
         {children}
         {/* Using optional chaining and nullish coalescing for safer code */}
         {badge && badge > 0 && (
-          <span className="absolute -right-2 -top-2 flex size-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+          <span
+            className="absolute -right-2 -top-2 flex size-5 items-center justify-center rounded-full bg-red-500 text-xs text-white"
+            aria-label={`${badge} items`}
+          >
             {badge > 99 ? '99+' : badge}
           </span>
         )}
@@ -155,6 +158,9 @@ const Navbar = () => {
                       className={`flex items-center text-base font-medium text-gray-700 transition-colors duration-200 hover:text-gray-900 ${
                         pathname === href ? 'text-gray-900' : ''
                       }`}
+                      aria-expanded={activeSubmenu === name}
+                      aria-haspopup="true"
+                      aria-controls={`submenu-${name}`}
                     >
                       {name}
                       <svg
@@ -176,16 +182,19 @@ const Navbar = () => {
                   </div>
                   {/* Fixed submenu rendering to prevent double flicker */}
                   <div
+                    id={`submenu-${name}`}
                     className={`absolute z-10 mt-2 w-48 rounded-md bg-white shadow-lg transition-opacity duration-200 ${
                       activeSubmenu === name
                         ? 'opacity-100'
                         : 'pointer-events-none opacity-0'
                     }`}
+                    aria-hidden={activeSubmenu !== name}
                   >
                     <div
                       className="py-1"
                       role="menu"
                       aria-orientation="vertical"
+                      aria-labelledby={`submenu-button-${name}`}
                     >
                       {/* Using destructuring in map callback */}
                       {submenu.map(({ name: itemName, href: itemHref }) => (
@@ -222,6 +231,8 @@ const Navbar = () => {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  aria-hidden="true"
+                  focusable="false"
                 >
                   <path
                     strokeLinecap="round"

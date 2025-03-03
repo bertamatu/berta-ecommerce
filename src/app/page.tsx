@@ -67,12 +67,15 @@ const ServiceFeature = ({ title, description, icon }: ServiceFeatureProps) => (
   <div className="p-6 text-center">
     <div
       className={`mx-auto mb-6 flex size-16 items-center justify-center rounded-2xl ${icon.bgColor}`}
+      aria-hidden="true"
     >
       <svg
         className={`size-8 ${icon.textColor}`}
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
+        aria-hidden="true"
+        focusable="false"
       >
         <path
           strokeLinecap="round"
