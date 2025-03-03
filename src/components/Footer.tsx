@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 const Footer = () => {
   return (
     <footer className="bg-white text-black">
@@ -5,18 +7,42 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-lg font-semibold mb-4 text-black">BertaShop</h3>
-            <p className="text-gray-800">Your one-stop shop for quality products.</p>
+            <p className="text-gray-800">
+              Your one-stop shop for quality products.
+            </p>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-black">Quick Links</h3>
+            <h3 className="text-lg font-semibold mb-4 text-black">
+              Quick Links
+            </h3>
             <ul className="space-y-2">
-              <li><a href="/products" className="text-gray-800 hover:text-black">Products</a></li>
-              <li><a href="/about" className="text-gray-800 hover:text-black">About Us</a></li>
-              <li><a href="/contact" className="text-gray-800 hover:text-black">Contact</a></li>
+              <li>
+                <Link
+                  href="/products"
+                  className="text-gray-800 hover:text-black"
+                >
+                  Products
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="text-gray-800 hover:text-black">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="text-gray-800 hover:text-black"
+                >
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-black">Contact Info</h3>
+            <h3 className="text-lg font-semibold mb-4 text-black">
+              Contact Info
+            </h3>
             <ul className="space-y-2 text-gray-800">
               <li>Email: info@bertashop.com</li>
               <li>Phone: (123) 456-7890</li>
