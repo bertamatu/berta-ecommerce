@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Berta E-commerce
 
-## Getting Started
+A modern e-commerce platform built with Next.js and Tailwind CSS.
 
-First, run the development server:
+## Features
+
+- Responsive design
+- Product catalog
+- Shopping cart functionality
+- User authentication
+
+## Development
 
 ```bash
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Linting and Formatting
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project uses ESLint and Prettier for code quality:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Run linter
+npm run lint
 
-## Learn More
+# Fix linting issues
+npm run lint:fix
 
-To learn more about Next.js, take a look at the following resources:
+# Format code
+npm run format
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Check formatting
+npm run format:check
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Fix all issues (format + lint)
+npm run fix
+```
 
-## Deploy on Vercel
+## Git Hooks
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Pre-commit hooks are set up using Husky and lint-staged to ensure code quality before commits.
