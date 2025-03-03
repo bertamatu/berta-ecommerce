@@ -1,114 +1,159 @@
-// Define the params type
-type ProductPageParams = {
-  params: Promise<{ id: string }>;
-};
+'use client';
 
-// Generate static paths for products
-export async function generateStaticParams() {
-  // In a real app, you would fetch all product IDs from your data source
-  // For now, we'll just return a few example IDs
-  return [{ id: '1' }, { id: '2' }, { id: '3' }];
-}
+import { products } from '@/app/Constants';
+import { useParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useCart } from '@/contexts/CartContext';
+import { Product } from '@/types';
 
-// Define the page component as async
-export default async function ProductPage({ params }: ProductPageParams) {
-  // In Next.js 15, params is a Promise that needs to be awaited
-  const { id } = await params;
+export default function ProductDetailPage() {
+  const params = useParams();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
+  
+  useEffect(() => {
+    if (params.id) {
+      const productId = parseInt(params.id as string);
+      const foundProduct = products.find(p => p.id === productId);
+      setProduct(foundProduct || null);
+    }
+  }, [params.id]);
+  
+  if (!product) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <p className="text-center text-xl">Product not found</p>
+      </div>
+    );
+  }
+  
+  // Calculate discounted price if applicable
+  const discountedPrice = product.discount > 0 
+    ? product.price * (1 - product.discount / 100) 
+    : null;
 
-  // Simulate fetching product data (in a real app, this would be an actual API call)
-  const productData = await getProductData(id);
+  const handleAddToCart = () => {
+    addToCart(product, quantity);
+    alert(`Added ${quantity} ${product.name}${quantity > 1 ? 's' : ''} to cart`);
+  };
+
+  const incrementQuantity = () => {
+    if (quantity < product.stock) {
+      setQuantity(quantity + 1);
+    }
+  };
+
+  const decrementQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
-      <article className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-        <figure className="space-y-4">
-          <div className="aspect-w-1 aspect-h-1 bg-gray-100 rounded-2xl sm:rounded-3xl overflow-hidden">
-            {/* Add product image here */}
+    <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Product Image */}
+        <div className="bg-white rounded-lg overflow-hidden shadow-sm">
+          <div className="relative aspect-w-1 aspect-h-1 bg-gray-200">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-full object-cover"
+            />
+            {product.discount > 0 && (
+              <div className="absolute top-4 right-4 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+                {product.discount}% OFF
+              </div>
+            )}
           </div>
-          <div className="grid grid-cols-4 gap-2 sm:gap-4">
-            {[1, 2, 3, 4].map((i) => (
-              <button
-                key={i}
-                className="aspect-w-1 aspect-h-1 bg-gray-100 rounded-xl sm:rounded-2xl overflow-hidden"
-              >
-                {/* Thumbnail images */}
-              </button>
-            ))}
-          </div>
-        </figure>
+        </div>
 
-        <section className="space-y-6 sm:space-y-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-              {productData.name}
-            </h1>
-            <p className="mt-3 text-3xl text-gray-900">
-              ${productData.price.toFixed(2)}
-            </p>
+        {/* Product Details */}
+        <div className="bg-white rounded-lg p-6 shadow-sm">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
+          <p className="text-gray-500 mb-4">{product.category}</p>
+          
+          {/* Pricing */}
+          <div className="mb-6">
+            {discountedPrice ? (
+              <div className="flex items-center">
+                <span className="text-3xl font-bold text-gray-900">${discountedPrice.toFixed(2)}</span>
+                <span className="ml-2 text-lg text-gray-500 line-through">${product.price.toFixed(2)}</span>
+              </div>
+            ) : (
+              <span className="text-3xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
+            )}
           </div>
-
-          <div className="prose prose-sm sm:prose-base text-gray-500">
-            <p>{productData.description}</p>
-          </div>
-
-          <div>
-            <h2 className="text-lg font-medium text-gray-900">Features</h2>
-            <ul className="mt-4 space-y-2">
-              {productData.features.map((feature, i) => (
-                <li key={i} className="flex items-center">
-                  <svg
-                    className="h-5 w-5 text-green-500 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  {feature}
-                </li>
+          
+          {/* Rating */}
+          <div className="flex items-center mb-6">
+            <div className="flex items-center">
+              {[...Array(5)].map((_, i) => (
+                <svg
+                  key={i}
+                  className={`w-5 h-5 ${
+                    i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'
+                  }`}
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
               ))}
-            </ul>
+              <span className="ml-2 text-gray-600">{product.rating} stars</span>
+            </div>
+            <span className="mx-2 text-gray-300">|</span>
+            <span className={`${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+              {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+            </span>
           </div>
-
-          <div className="flex flex-col sm:flex-row gap-4">
-            <button className="flex-1 bg-black text-white px-6 py-3 rounded-full hover:bg-gray-800 transition-colors duration-200">
-              Add to Cart
-            </button>
-            <button className="flex-1 bg-white text-black px-6 py-3 rounded-full border border-gray-200 hover:border-gray-300 transition-colors duration-200">
-              Add to Wishlist
-            </button>
+          
+          {/* Description */}
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold mb-2">Description</h2>
+            <p className="text-gray-600">{product.description}</p>
           </div>
-        </section>
-      </article>
+          
+          {/* Quantity Selector */}
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold mb-2">Quantity</h2>
+            <div className="flex items-center">
+              <button
+                onClick={decrementQuantity}
+                className="p-2 border border-gray-300 rounded-l-md"
+                disabled={quantity <= 1}
+              >
+                -
+              </button>
+              <input
+                type="number"
+                min="1"
+                max={product.stock}
+                value={quantity}
+                onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                className="p-2 w-16 text-center border-y border-gray-300"
+              />
+              <button
+                onClick={incrementQuantity}
+                className="p-2 border border-gray-300 rounded-r-md"
+                disabled={quantity >= product.stock}
+              >
+                +
+              </button>
+            </div>
+          </div>
+          
+          {/* Add to Cart Button */}
+          <button
+            onClick={handleAddToCart}
+            className="w-full bg-black text-white py-3 px-6 rounded-full hover:bg-gray-800 transition-colors duration-200"
+            disabled={product.stock === 0}
+          >
+            {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+          </button>
+        </div>
+      </div>
     </main>
   );
-}
-
-// Helper function to simulate fetching product data
-async function getProductData(id: string) {
-  // In a real app, you would fetch this data from an API
-  // For now, we'll just return mock data
-
-  // Simulate a small delay to mimic a network request
-  await new Promise((resolve) => setTimeout(resolve, 100));
-
-  return {
-    id,
-    name: `Premium Product ${id}`,
-    price: 99.99,
-    description:
-      'This is a detailed description of the product. It features premium materials and expert craftsmanship, making it a perfect addition to your collection.',
-    images: ['/product1.jpg'],
-    features: [
-      'Premium Quality',
-      'Sustainable Materials',
-      'Handcrafted',
-      'Lifetime Warranty',
-    ],
-  };
 }

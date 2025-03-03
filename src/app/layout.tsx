@@ -4,6 +4,7 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { WEB_APP_DESCRIPTION, WEB_APP_TITLE } from './Constants';
+import { CartProvider } from '@/contexts/CartContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,11 +17,13 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main className="flex-1 md:mt-0 mb-14 md:mb-0">{children}</main>
-          <Footer />
-        </div>
+        <CartProvider>
+          <div className="min-h-screen flex flex-col">
+            <Navbar />
+            <main className="flex-1 md:mt-0 mb-14 md:mb-0">{children}</main>
+            <Footer />
+          </div>
+        </CartProvider>
       </body>
     </html>
   );
