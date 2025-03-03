@@ -1,6 +1,12 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 import { Product, CartItem } from '@/types';
 
 interface CartContextType {
@@ -48,16 +54,17 @@ export function CartProvider({ children }: CartProviderProps) {
   useEffect(() => {
     try {
       localStorage.setItem('cart', JSON.stringify(items));
-      
+
       // Calculate totals
       const count = items.reduce((sum, item) => sum + item.quantity, 0);
       setItemCount(count);
-      
+
       const cartTotal = items.reduce((sum, item) => {
         const price = item.product?.price || 0;
         const discount = item.product?.discount || 0;
-        const discountedPrice = discount > 0 ? price * (1 - discount / 100) : price;
-        return sum + (discountedPrice * item.quantity);
+        const discountedPrice =
+          discount > 0 ? price * (1 - discount / 100) : price;
+        return sum + discountedPrice * item.quantity;
       }, 0);
       setTotal(cartTotal);
     } catch (error) {
@@ -66,10 +73,12 @@ export function CartProvider({ children }: CartProviderProps) {
   }, [items]);
 
   const addToCart = (product: Product, quantity = 1) => {
-    setItems(prevItems => {
+    setItems((prevItems) => {
       // Check if the product is already in the cart
-      const existingItemIndex = prevItems.findIndex(item => item.productId === product.id);
-      
+      const existingItemIndex = prevItems.findIndex(
+        (item) => item.productId === product.id
+      );
+
       if (existingItemIndex >= 0) {
         // Update quantity of existing item
         const updatedItems = [...prevItems];
@@ -83,7 +92,9 @@ export function CartProvider({ children }: CartProviderProps) {
   };
 
   const removeFromCart = (productId: number) => {
-    setItems(prevItems => prevItems.filter(item => item.productId !== productId));
+    setItems((prevItems) =>
+      prevItems.filter((item) => item.productId !== productId)
+    );
   };
 
   const updateQuantity = (productId: number, quantity: number) => {
@@ -91,9 +102,9 @@ export function CartProvider({ children }: CartProviderProps) {
       removeFromCart(productId);
       return;
     }
-    
-    setItems(prevItems => 
-      prevItems.map(item => 
+
+    setItems((prevItems) =>
+      prevItems.map((item) =>
         item.productId === productId ? { ...item, quantity } : item
       )
     );
@@ -110,7 +121,7 @@ export function CartProvider({ children }: CartProviderProps) {
     updateQuantity,
     clearCart,
     itemCount,
-    total
+    total,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

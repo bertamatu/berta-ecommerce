@@ -1,17 +1,20 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { products } from './Constants';
 import { useCart } from '@/contexts/CartContext';
 
 const HomePage = () => {
   const { addToCart } = useCart();
-  
+
   // Select a few products to feature (e.g., products with IDs 1, 3, and 5)
-  const featuredProducts = products.filter(product => [1, 3, 5].includes(product.id));
-  
+  const featuredProducts = products.filter((product) =>
+    [1, 3, 5].includes(product.id)
+  );
+
   const handleAddToCart = (productId: number) => {
-    const product = products.find(p => p.id === productId);
+    const product = products.find((p) => p.id === productId);
     if (product) {
       addToCart(product, 1);
       alert(`Added ${product.name} to cart`);
@@ -77,18 +80,25 @@ const HomePage = () => {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {featuredProducts.map((product) => {
-              const discountedPrice = product.discount > 0 
-                ? product.price * (1 - product.discount / 100) 
-                : null;
-                
+            {featuredProducts.map((product, index) => {
+              const discountedPrice =
+                product.discount > 0
+                  ? product.price * (1 - product.discount / 100)
+                  : null;
+
               return (
-                <div key={product.id} className="group relative bg-white border border-gray-200 rounded-lg flex flex-col overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
-                  <div className="aspect-w-3 aspect-h-4 bg-gray-200 group-hover:opacity-75 sm:aspect-none sm:h-80">
-                    <img
+                <div
+                  key={product.id}
+                  className="group relative bg-white border border-gray-200 rounded-lg flex flex-col overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
+                >
+                  <div className="relative w-full h-[280px]">
+                    <Image
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-cover object-center sm:w-full sm:h-full"
+                      fill
+                      sizes="(max-width: 640px) 100vw, 640px"
+                      className="object-cover object-center group-hover:opacity-90 transition-opacity duration-300"
+                      priority={index < 4} // Prioritize loading the first 4 images
                     />
                     {product.discount > 0 && (
                       <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
@@ -103,17 +113,25 @@ const HomePage = () => {
                         {product.name}
                       </Link>
                     </h3>
-                    <p className="mt-1 text-sm text-gray-500">{product.category}</p>
+                    <p className="mt-1 text-sm text-gray-500">
+                      {product.category}
+                    </p>
                     <div className="mt-auto pt-4">
                       <div className="flex items-center justify-between">
                         <div>
                           {discountedPrice ? (
                             <div className="flex items-center">
-                              <p className="text-lg font-medium text-gray-900">${discountedPrice.toFixed(2)}</p>
-                              <p className="ml-2 text-sm text-gray-500 line-through">${product.price.toFixed(2)}</p>
+                              <p className="text-lg font-medium text-gray-900">
+                                ${discountedPrice.toFixed(2)}
+                              </p>
+                              <p className="ml-2 text-sm text-gray-500 line-through">
+                                ${product.price.toFixed(2)}
+                              </p>
                             </div>
                           ) : (
-                            <p className="text-lg font-medium text-gray-900">${product.price.toFixed(2)}</p>
+                            <p className="text-lg font-medium text-gray-900">
+                              ${product.price.toFixed(2)}
+                            </p>
                           )}
                         </div>
                         <div className="flex items-center">
@@ -121,8 +139,18 @@ const HomePage = () => {
                             onClick={() => handleAddToCart(product.id)}
                             className="ml-4 p-2 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                           >
-                            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            <svg
+                              className="h-6 w-6"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                              />
                             </svg>
                           </button>
                         </div>
@@ -160,7 +188,7 @@ const HomePage = () => {
                 Carefully selected products that meet our high standards.
               </p>
             </div>
-            
+
             <div className="text-center p-6">
               <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <svg
@@ -179,10 +207,11 @@ const HomePage = () => {
               </div>
               <h3 className="text-xl font-semibold mb-4">Fast Delivery</h3>
               <p className="text-gray-600">
-                Get your products delivered quickly and reliably to your doorstep.
+                Get your products delivered quickly and reliably to your
+                doorstep.
               </p>
             </div>
-            
+
             <div className="text-center p-6">
               <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <svg
@@ -201,7 +230,8 @@ const HomePage = () => {
               </div>
               <h3 className="text-xl font-semibold mb-4">Secure Payment</h3>
               <p className="text-gray-600">
-                Shop with confidence with our secure and encrypted payment system.
+                Shop with confidence with our secure and encrypted payment
+                system.
               </p>
             </div>
           </div>

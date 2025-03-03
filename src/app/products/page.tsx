@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { products } from '@/app/Constants';
 import { Product } from '@/types/index';
 import { useCart } from '@/contexts/CartContext';
@@ -13,70 +14,86 @@ export default function ProductsPage() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category');
   const mainCategoryParam = searchParams.get('mainCategory');
-  const [activeCategory, setActiveCategory] = useState<string | null>(categoryParam);
-  const [activeMainCategory, setActiveMainCategory] = useState<string | null>(mainCategoryParam);
-  
+  const [activeCategory, setActiveCategory] = useState<string | null>(
+    categoryParam
+  );
+  const [activeMainCategory, setActiveMainCategory] = useState<string | null>(
+    mainCategoryParam
+  );
+
   // Get all unique categories from products
-  const allCategories = Array.from(new Set(products.map(product => product.category)));
-  
+  const allCategories = Array.from(
+    new Set(products.map((product) => product.category))
+  );
+
   // Filter products when parameters change
   useEffect(() => {
     let filtered = products;
-    
+
     // Filter by mainCategory if provided
     if (mainCategoryParam) {
-      filtered = filtered.filter(product => product.mainCategory === mainCategoryParam);
+      filtered = filtered.filter(
+        (product) => product.mainCategory === mainCategoryParam
+      );
       setActiveMainCategory(mainCategoryParam);
     } else {
       setActiveMainCategory(null);
     }
-    
+
     // Further filter by category if provided
     if (categoryParam) {
-      filtered = filtered.filter(product => product.category === categoryParam);
+      filtered = filtered.filter(
+        (product) => product.category === categoryParam
+      );
       setActiveCategory(categoryParam);
     } else {
       setActiveCategory(null);
     }
-    
+
     setFilteredProducts(filtered);
   }, [categoryParam, mainCategoryParam]);
-  
+
   // Handle category filter click
   const handleCategoryFilter = (category: string | null) => {
     if (category === activeCategory) {
       // If clicking the active category, clear the filter
       setActiveCategory(null);
-      
+
       // Update URL without the category parameter but keep mainCategory if present
-      const url = mainCategoryParam 
-        ? `/products?mainCategory=${mainCategoryParam}` 
+      const url = mainCategoryParam
+        ? `/products?mainCategory=${mainCategoryParam}`
         : '/products';
       window.history.pushState({}, '', url);
-      
+
       // Filter products only by mainCategory if present
       if (mainCategoryParam) {
-        setFilteredProducts(products.filter(product => product.mainCategory === mainCategoryParam));
+        setFilteredProducts(
+          products.filter(
+            (product) => product.mainCategory === mainCategoryParam
+          )
+        );
       } else {
         setFilteredProducts(products);
       }
     } else {
       // Otherwise, apply the new filter
       setActiveCategory(category);
-      
+
       // Update URL with the new category parameter and keep mainCategory if present
-      const url = mainCategoryParam 
-        ? `/products?mainCategory=${mainCategoryParam}&category=${category}` 
+      const url = mainCategoryParam
+        ? `/products?mainCategory=${mainCategoryParam}&category=${category}`
         : `/products?category=${category}`;
       window.history.pushState({}, '', url);
-      
+
       // Filter products by both category and mainCategory if present
       let filtered = products;
       if (mainCategoryParam) {
-        filtered = filtered.filter(product => product.mainCategory === mainCategoryParam);
+        filtered = filtered.filter(
+          (product) => product.mainCategory === mainCategoryParam
+        );
       }
       if (category) {
-        filtered = filtered.filter(product => product.category === category);
+        filtered = filtered.filter((product) => product.category === category);
       }
       setFilteredProducts(filtered);
     }
@@ -90,19 +107,23 @@ export default function ProductsPage() {
 
   // Get categories for the current view (filtered by mainCategory if present)
   const visibleCategories = mainCategoryParam
-    ? Array.from(new Set(products
-        .filter(product => product.mainCategory === mainCategoryParam)
-        .map(product => product.category)))
+    ? Array.from(
+        new Set(
+          products
+            .filter((product) => product.mainCategory === mainCategoryParam)
+            .map((product) => product.category)
+        )
+      )
     : allCategories;
 
   return (
     <main className="max-w-7xl mx-auto px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
       <div className="text-center">
         <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">
-          {activeCategory 
-            ? `${activeCategory} Products` 
-            : activeMainCategory 
-              ? `${activeMainCategory} Products` 
+          {activeCategory
+            ? `${activeCategory} Products`
+            : activeMainCategory
+              ? `${activeMainCategory} Products`
               : 'All Products'}
         </h1>
         <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
@@ -143,16 +164,19 @@ export default function ProductsPage() {
       {/* Products grid */}
       <div className="mt-12 grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
+          filteredProducts.map((product, index) => (
             <div
               key={product.id}
               className="group relative bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
             >
-              <div className="aspect-w-4 aspect-h-3 bg-gray-200 overflow-hidden">
-                <img
+              <div className="relative w-full h-[250px]">
+                <Image
                   src={product.image}
                   alt={product.name}
-                  className="w-full h-64 object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                  priority={index < 4} // Prioritize loading the first 4 images
                 />
                 {product.discount > 0 && (
                   <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
@@ -162,7 +186,10 @@ export default function ProductsPage() {
               </div>
               <div className="p-4">
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  <Link href={`/products/${product.id}`} className="hover:text-blue-600">
+                  <Link
+                    href={`/products/${product.id}`}
+                    className="hover:text-blue-600"
+                  >
                     {product.name}
                   </Link>
                 </h3>
@@ -174,7 +201,11 @@ export default function ProductsPage() {
                     {product.discount > 0 ? (
                       <div className="flex items-center">
                         <span className="text-lg font-bold text-gray-900">
-                          ${(product.price * (1 - product.discount / 100)).toFixed(2)}
+                          $
+                          {(
+                            product.price *
+                            (1 - product.discount / 100)
+                          ).toFixed(2)}
                         </span>
                         <span className="ml-2 text-sm text-gray-500 line-through">
                           ${product.price.toFixed(2)}
@@ -188,7 +219,9 @@ export default function ProductsPage() {
                   </div>
                   <div className="flex items-center">
                     <span className="text-yellow-400 mr-1">★</span>
-                    <span className="text-sm text-gray-600">{product.rating}</span>
+                    <span className="text-sm text-gray-600">
+                      {product.rating}
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between mt-2">
@@ -216,7 +249,9 @@ export default function ProductsPage() {
           ))
         ) : (
           <div className="col-span-full text-center py-12">
-            <h3 className="text-xl font-medium text-gray-900">No products found</h3>
+            <h3 className="text-xl font-medium text-gray-900">
+              No products found
+            </h3>
             <p className="mt-2 text-gray-500">
               Try selecting a different category or clearing your filters.
             </p>
