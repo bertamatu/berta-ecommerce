@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,7 +8,8 @@ import { products } from '@/app/Constants';
 import { Product } from '@/types/index';
 import { useCart } from '@/contexts/CartContext';
 
-export default function ProductsPage() {
+// Component to handle search params
+function ProductsContent() {
   const { addToCart } = useCart();
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
   const searchParams = useSearchParams();
@@ -259,5 +260,14 @@ export default function ProductsPage() {
         )}
       </div>
     </main>
+  );
+}
+
+// Main component with Suspense boundary
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center">Loading products...</div>}>
+      <ProductsContent />
+    </Suspense>
   );
 }
