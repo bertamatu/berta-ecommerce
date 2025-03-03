@@ -6,8 +6,8 @@ import Footer from '@/components/Footer';
 import { WEB_APP_TITLE, WEB_APP_DESCRIPTION } from './Constants';
 import { CartProvider } from '@/contexts/CartContext';
 
-// Font configuration using object destructuring
-const { className: interClassName } = Inter({ subsets: ['latin'] });
+// Font configuration - must be assigned to a variable directly
+const inter = Inter({ subsets: ['latin'] });
 
 // Using object property shorthand for metadata
 export const metadata: Metadata = {
@@ -25,7 +25,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
         rel="stylesheet"
       />
     </head>
-    <body className={interClassName}>
+    <body className={inter.className}>
       <CartProvider>
         <div className="flex min-h-screen flex-col">
           <Navbar />
