@@ -9,7 +9,7 @@ import { Product } from '@/types/index';
 import { useCart } from '@/contexts/CartContext';
 
 // Component to handle search params
-function ProductsContent() {
+const ProductsContent = () => {
   const { addToCart } = useCart();
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
   const searchParams = useSearchParams();
@@ -261,10 +261,10 @@ function ProductsContent() {
       </div>
     </main>
   );
-}
+};
 
 // Main component with Suspense boundary
-export default function ProductsPage() {
+const ProductsPage = () => {
   return (
     <Suspense
       fallback={<div className="p-8 text-center">Loading products...</div>}
@@ -272,4 +272,6 @@ export default function ProductsPage() {
       <ProductsContent />
     </Suspense>
   );
-}
+};
+
+export default ProductsPage;

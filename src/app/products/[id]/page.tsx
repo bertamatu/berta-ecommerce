@@ -7,7 +7,7 @@ import { useCart } from '@/contexts/CartContext';
 import { Product } from '@/types';
 import Image from 'next/image';
 
-export default function ProductDetailPage() {
+const ProductDetailPage = () => {
   const params = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -173,4 +173,6 @@ export default function ProductDetailPage() {
       </div>
     </main>
   );
-}
+};
+
+export default ProductDetailPage;
