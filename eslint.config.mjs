@@ -35,6 +35,7 @@ const eslintConfig = [
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unsafe-function-type': 'warn',
       '@typescript-eslint/no-require-imports': 'warn',
+      'react/no-unescaped-entities': 'off',
     },
   },
   // TailwindCSS rules
