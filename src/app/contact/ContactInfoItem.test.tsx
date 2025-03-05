@@ -1,4 +1,5 @@
-import { render, screen, checkAccessibility } from '@/utils/test-utils';
+import { render, screen } from '@/utils/test-utils';
+import { checkAccessibility } from '@/utils/a11y-test-utils';
 import { ContactInfoItem } from './page';
 
 describe('ContactInfoItem', () => {

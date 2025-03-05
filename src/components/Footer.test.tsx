@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, screen, checkAccessibility } from '@/utils/test-utils';
+import { render, screen } from '@/utils/test-utils';
+import { checkAccessibility } from '@/utils/a11y-test-utils';
 import '@testing-library/jest-dom';
 import Footer from './Footer';
 
