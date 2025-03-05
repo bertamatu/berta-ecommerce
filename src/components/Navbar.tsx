@@ -233,6 +233,11 @@ const Navbar = () => {
                   stroke="currentColor"
                   aria-hidden="true"
                   focusable="false"
+                  data-testid={
+                    label === 'Cart'
+                      ? 'cart-icon'
+                      : `${label.toLowerCase()}-icon`
+                  }
                 >
                   <path
                     strokeLinecap="round"

@@ -1,8 +1,14 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
 npx lint-staged
 
 # Run accessibility tests on staged files
-FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(jsx?|tsx?)$')
+FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E "\.(jsx?|tsx?)$")
 if [ -n "$FILES" ]; then
   echo "Running accessibility tests on staged files..."
   npm run test:a11y
 fi
+
+# Run Cypress tests on staged files
+node scripts/pre-commit-cypress.js

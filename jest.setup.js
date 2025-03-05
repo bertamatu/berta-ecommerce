@@ -2,7 +2,7 @@
 import '@testing-library/jest-dom';
 
 // Import jest-axe for accessibility testing
-import { toHaveNoViolations } from 'jest-axe';
+const { toHaveNoViolations } = require('jest-axe');
 
 // Add custom jest matchers for accessibility testing
 expect.extend(toHaveNoViolations);
