@@ -31,7 +31,10 @@ const CategoryFilter = ({
   onClearFilters,
   hasActiveFilters,
 }: CategoryFilterProps) => (
-  <div className="mt-8 flex flex-wrap justify-center gap-2">
+  <div
+    className="mt-8 flex flex-wrap justify-center gap-2"
+    data-testid="product-filter"
+  >
     {categories.map((category) => (
       <button
         key={category}
@@ -41,6 +44,7 @@ const CategoryFilter = ({
             ? 'bg-blue-600 text-white'
             : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
         } transition-colors duration-200`}
+        data-testid={`filter-${category.toLowerCase().replace(/\s+/g, '-')}`}
       >
         {category}
       </button>
@@ -49,6 +53,7 @@ const CategoryFilter = ({
       <button
         onClick={onClearFilters}
         className="rounded-full bg-red-100 px-4 py-2 text-sm font-medium text-red-800 transition-colors duration-200 hover:bg-red-200"
+        data-testid="clear-filters"
       >
         Clear Filters
       </button>
@@ -70,7 +75,10 @@ const ProductCard = ({
     discount > 0 ? (price * (1 - discount / 100)).toFixed(2) : null;
 
   return (
-    <div className="group relative overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 hover:shadow-lg">
+    <div
+      className="group relative overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 hover:shadow-lg"
+      data-testid="product-item"
+    >
       <div className="relative h-[250px] w-full">
         <Image
           src={image}
@@ -88,7 +96,11 @@ const ProductCard = ({
       </div>
       <div className="p-4">
         <h3 className="mb-2 text-lg font-medium text-gray-900">
-          <Link href={`/products/${id}`} className="hover:text-blue-600">
+          <Link
+            href={`/products/${id}`}
+            className="hover:text-blue-600"
+            data-testid={`product-link-${id}`}
+          >
             {name}
           </Link>
         </h3>
@@ -119,6 +131,7 @@ const ProductCard = ({
           <button
             onClick={() => onAddToCart(product)}
             className="text-gray-500 hover:text-gray-700"
+            data-testid={`add-to-cart-${id}`}
           >
             <svg
               className="size-6"

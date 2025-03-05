@@ -1,6 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+
+// Create a static lock to prevent concurrent runs across component instances
+let axeRunLock = false;
 
 interface A11yIssue {
   id: string;
@@ -11,41 +14,110 @@ interface A11yIssue {
   nodes: { html: string; target: string[] }[];
 }
 
+// Type for the axe module
+type AxeModule = {
+  default: {
+    run: (context: Document) => Promise<{
+      violations: A11yIssue[];
+    }>;
+  };
+};
+
 /**
  * A development-only component that checks for accessibility issues
  * Only include this component in development builds
+ *
+ * This component uses axe-core to scan the DOM for accessibility issues
+ * and displays them in a panel at the bottom of the screen.
+ *
+ * It's designed to help developers identify and fix accessibility issues
+ * during development, not for production use.
  */
 export const A11yChecker: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [issues, setIssues] = useState<A11yIssue[]>([]);
   const [showIssues, setShowIssues] = useState(false);
+  const isRunningRef = useRef(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const axeRef = useRef<AxeModule | null>(null);
 
   useEffect(() => {
     // Only run in development
     if (process.env.NODE_ENV !== 'development') return;
 
-    const runA11yCheck = async () => {
-      try {
-        // Dynamically import axe-core only in development
-        const axe = await import('axe-core');
+    // Function to load axe-core
+    const loadAxe = async () => {
+      if (!axeRef.current) {
+        try {
+          // Dynamically import axe-core only in development
+          axeRef.current = (await import('axe-core')) as AxeModule;
+        } catch (error) {
+          console.error('Error loading axe-core:', error);
+        }
+      }
+      return axeRef.current;
+    };
 
-        // Wait for the component to render
-        setTimeout(async () => {
-          const results = await axe.default.run(document);
-          if (results.violations.length > 0) {
-            // Type cast to ensure compatibility
-            setIssues(results.violations as unknown as A11yIssue[]);
+    const runA11yCheck = async () => {
+      // Skip if already running in this instance or globally
+      if (isRunningRef.current || axeRunLock) return;
+
+      try {
+        // Set running flags
+        isRunningRef.current = true;
+        axeRunLock = true;
+
+        // Load axe if not already loaded
+        const axe = await loadAxe();
+        if (!axe) return;
+
+        // Clear any existing timer
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+        }
+
+        // Use a debounced approach to prevent multiple runs
+        timerRef.current = setTimeout(async () => {
+          try {
+            // Check if document is available (client-side only)
+            if (typeof document === 'undefined') return;
+
+            // Run the accessibility check
+            const results = await axe.default.run(document);
+            if (results.violations.length > 0) {
+              setIssues(results.violations);
+            }
+          } catch (error) {
+            console.error('Error during axe.run:', error);
+          } finally {
+            // Reset running flags
+            isRunningRef.current = false;
+            axeRunLock = false;
           }
-        }, 1000);
+        }, 1500); // Increased timeout to ensure components are fully rendered
       } catch (error) {
         console.error('Error running accessibility check:', error);
+        // Reset running flags on error
+        isRunningRef.current = false;
+        axeRunLock = false;
       }
     };
 
+    // Run the check
     runA11yCheck();
+
+    // Cleanup function
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      // Only reset the instance flag, not the global lock
+      isRunningRef.current = false;
+    };
   }, []);
 
+  // Don't render anything in production or if no issues found
   if (process.env.NODE_ENV !== 'development' || issues.length === 0) {
     return <>{children}</>;
   }

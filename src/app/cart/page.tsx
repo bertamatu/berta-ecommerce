@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 // Reusable components
 const EmptyCartMessage = () => (
-  <div className="py-12 text-center">
+  <div className="py-12 text-center" data-testid="empty-cart-message">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       className="mx-auto mb-4 size-24 text-gray-300"
@@ -29,6 +29,7 @@ const EmptyCartMessage = () => (
     <Link
       href="/products"
       className="rounded-full bg-black px-6 py-3 text-white transition-colors duration-200 hover:bg-gray-800"
+      data-testid="continue-shopping"
     >
       Continue Shopping
     </Link>
@@ -86,7 +87,10 @@ const CartItem = ({
   const totalItemPrice = (discountedPrice * quantity).toFixed(2);
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg bg-white p-4 shadow transition-shadow duration-200 hover:shadow-md sm:flex-row">
+    <div
+      className="flex flex-col gap-4 rounded-lg bg-white p-4 shadow transition-shadow duration-200 hover:shadow-md sm:flex-row"
+      data-testid={`cart-item-${id}`}
+    >
       <div className="group relative h-24 w-full overflow-hidden rounded-md bg-gray-100 sm:w-24">
         <Image
           src={image}
@@ -104,6 +108,7 @@ const CartItem = ({
             onClick={() => onRemove(id)}
             className="text-gray-400 transition-colors duration-200 hover:text-red-500"
             aria-label="Remove item"
+            data-testid={`remove-item-${id}`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +165,10 @@ const OrderSummary = ({
   } flex items-center justify-center transition-colors duration-200`;
 
   return (
-    <div className="sticky top-4 rounded-lg bg-white p-6 shadow">
+    <div
+      className="sticky top-4 rounded-lg bg-white p-6 shadow"
+      data-testid="order-summary"
+    >
       <h2 className="mb-4 text-xl font-semibold">Order Summary</h2>
       <div className="mb-4 space-y-2">
         <div className="flex justify-between">
@@ -184,6 +192,7 @@ const OrderSummary = ({
         onClick={onCheckout}
         disabled={isCheckingOut}
         className={checkoutButtonClass}
+        data-testid="checkout-button"
       >
         {isCheckingOut ? (
           <>
@@ -285,6 +294,7 @@ const CartPage = () => {
             <button
               onClick={clearCart}
               className="text-red-600 hover:text-red-800"
+              data-testid="clear-cart"
             >
               Clear Cart
             </button>
