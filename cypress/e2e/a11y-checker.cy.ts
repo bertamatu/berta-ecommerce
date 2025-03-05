@@ -7,7 +7,7 @@ describe('A11yCheckerWrapper Component', () => {
     cy.get('body').should('be.visible');
   });
 
-  it('should not show the accessibility panel in Cypress tests', () => {
+  it('should not display the accessibility panel in Cypress tests', () => {
     cy.get('body')
       .find('div')
       .contains('Accessibility Issues')
@@ -23,6 +23,7 @@ describe('A11yCheckerWrapper Component', () => {
   it('should navigate between pages without errors', () => {
     cy.get('nav a').first().click();
     cy.url().should('not.equal', '/');
+
     cy.visit('/');
     cy.get('body').should('be.visible');
   });
