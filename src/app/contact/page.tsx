@@ -69,8 +69,8 @@ const FormField = ({
   </div>
 );
 
-// Contact info item component
-export const ContactInfoItem = ({
+// Contact info item component - removed export keyword
+const ContactInfoItem = ({
   icon,
   title,
   details,

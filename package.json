@@ -18,6 +18,8 @@
     "test:a11y": "jest src/tests/a11y.test.tsx --config jest.config.mjs",
     "cypress": "cypress open",
     "cypress:headless": "cypress run",
+    "cypress:run-file": "cypress run --spec",
+    "test:cypress": "cypress run",
     "test:e2e": "start-server-and-test dev http://localhost:3000 cypress",
     "test:e2e:headless": "start-server-and-test dev http://localhost:3000 cypress:headless"
   },
@@ -25,6 +27,9 @@
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
       "prettier --write"
+    ],
+    "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}": [
+      "npm run test:cypress"
     ]
   },
   "dependencies": {
