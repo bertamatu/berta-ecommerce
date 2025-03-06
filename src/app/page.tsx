@@ -5,8 +5,9 @@ import Image from 'next/image';
 import { products } from './Constants';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/contexts/ToastContext';
+import { useWishlist } from '@/contexts/WishlistContext';
 import { Product } from '@/types';
-import { useId, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const FEATURED_PRODUCT_IDS = [1, 3, 5];
 
@@ -93,8 +94,21 @@ const ProductCard = ({
   priority = false,
 }: ProductCardProps) => {
   const { id, name, image, category, price, discount, rating } = product;
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const [inWishlist, setInWishlist] = useState(false);
+
+  useEffect(() => {
+    setInWishlist(isInWishlist(id));
+  }, [id, isInWishlist]);
 
   const discountedPrice = discount > 0 ? price * (1 - discount / 100) : null;
+
+  const handleWishlistToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(product);
+    setInWishlist(!inWishlist);
+  };
 
   const renderStars = (rating: number) => {
     const stars = [];
@@ -173,6 +187,25 @@ const ProductCard = ({
             </div>
           )}
         </Link>
+        <button
+          onClick={handleWishlistToggle}
+          className="absolute left-2 top-2 z-10 rounded-full bg-white p-1.5 shadow-sm transition-all duration-200 hover:scale-110 hover:shadow-md"
+          aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <svg
+            className={`size-5 ${inWishlist ? 'text-red-500' : 'text-gray-400'}`}
+            fill={inWishlist ? 'currentColor' : 'none'}
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+            />
+          </svg>
+        </button>
       </div>
       <div className="flex flex-1 flex-col p-4">
         <h3 className="text-lg font-medium text-gray-900">

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { WEB_APP_TITLE, ROUTES } from '@/app/Constants';
 import { useCart } from '@/contexts/CartContext';
+import { useWishlist } from '@/contexts/WishlistContext';
 
 const { INTERIOR, GARDEN, SEARCH, ACCOUNT, WISHLIST, CART } = ROUTES;
 
@@ -99,6 +100,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const _router = useRouter();
   const { itemCount } = useCart();
+  const { itemCount: wishlistCount } = useWishlist();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -208,11 +210,21 @@ const Navbar = () => {
                 key={index}
                 href={href}
                 label={label}
-                badge={label === 'Cart' ? itemCount : undefined}
+                badge={
+                  label === 'Cart'
+                    ? itemCount
+                    : label === 'Wishlist'
+                      ? wishlistCount
+                      : undefined
+                }
               >
                 <svg
                   className="size-6 transition-colors duration-200 hover:text-gray-900"
-                  fill="none"
+                  fill={
+                    label === 'Wishlist' && pathname === WISHLIST.path
+                      ? 'currentColor'
+                      : 'none'
+                  }
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   aria-hidden="true"

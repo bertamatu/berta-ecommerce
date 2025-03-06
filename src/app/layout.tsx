@@ -4,6 +4,7 @@ import Footer from '@/components/Footer';
 import { WEB_APP_TITLE, WEB_APP_DESCRIPTION } from './Constants';
 import { CartProvider } from '@/contexts/CartContext';
 import { ToastProvider } from '@/contexts/ToastContext';
+import { WishlistProvider } from '@/contexts/WishlistContext';
 import { Inter } from 'next/font/google';
 import { Metadata } from 'next';
 import { A11yCheckerWrapper } from '@/components/A11yCheckerWrapper';
@@ -23,14 +24,16 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
     <body className={inter.className}>
       <CartProvider>
         <ToastProvider>
-          {/* A11yCheckerWrapper will internally decide whether to run the checker */}
-          <A11yCheckerWrapper>
-            <div className="flex min-h-screen flex-col">
-              <Navbar />
-              <main className="mb-14 flex-1 md:my-0">{children}</main>
-              <Footer />
-            </div>
-          </A11yCheckerWrapper>
+          <WishlistProvider>
+            {/* A11yCheckerWrapper will internally decide whether to run the checker */}
+            <A11yCheckerWrapper>
+              <div className="flex min-h-screen flex-col">
+                <Navbar />
+                <main className="mb-14 flex-1 md:my-0">{children}</main>
+                <Footer />
+              </div>
+            </A11yCheckerWrapper>
+          </WishlistProvider>
         </ToastProvider>
       </CartProvider>
     </body>
