@@ -103,7 +103,7 @@ const ProductCard = ({
           alt={name}
           fill
           sizes="(max-width: 640px) 100vw, 640px"
-          className="object-cover object-center transition-opacity duration-300 group-hover:opacity-90"
+          className="object-cover object-center"
           priority={priority}
         />
         {discount > 0 && (
@@ -114,9 +114,9 @@ const ProductCard = ({
       </div>
       <div className="flex flex-1 flex-col p-4">
         <h3 className="text-lg font-medium text-gray-900">
-          <Link href={`/products/${id}`}>
-            <span aria-hidden="true" className="absolute inset-0" />
+          <Link href={`/products/${id}`} className="relative">
             {name}
+            <span aria-hidden="true" className="absolute inset-0 z-0" />
           </Link>
         </h3>
         <p className="mt-1 text-sm text-gray-500">{category}</p>
@@ -125,26 +125,34 @@ const ProductCard = ({
             <div>
               {discountedPrice ? (
                 <div className="flex items-center">
-                  <p className="text-lg font-medium text-gray-900">
-                    ${discountedPrice.toFixed(2)}
-                  </p>
+                  <div className="rounded-full bg-black px-3 py-1 text-white shadow-sm transition-all duration-200 hover:shadow">
+                    <p className="text-sm font-medium">
+                      ${discountedPrice.toFixed(2)}
+                    </p>
+                  </div>
                   <p className="ml-2 text-sm text-gray-500 line-through">
                     ${price.toFixed(2)}
                   </p>
                 </div>
               ) : (
-                <p className="text-lg font-medium text-gray-900">
-                  ${price.toFixed(2)}
-                </p>
+                <div className="rounded-full bg-black px-3 py-1 text-white shadow-sm transition-all duration-200 hover:shadow">
+                  <p className="text-sm font-medium">${price.toFixed(2)}</p>
+                </div>
               )}
             </div>
             <div className="flex items-center">
               <button
-                onClick={() => onAddToCart(id)}
-                className="ml-4 p-2 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  onAddToCart(id);
+                }}
+                className="relative z-20 flex items-center rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-black transition-all duration-200 hover:scale-105 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+                aria-label="Add to cart"
+                data-product-id={id}
               >
                 <svg
-                  className="size-6"
+                  className="mr-1 size-4"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -153,9 +161,10 @@ const ProductCard = ({
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                   />
                 </svg>
+                Add to Cart
               </button>
             </div>
           </div>
@@ -178,7 +187,30 @@ const HomePage = () => {
     if (!product) return;
 
     addToCart(product, 1);
-    alert(`Added ${product.name} to cart`);
+
+    const button = document.querySelector(
+      `button[data-product-id="${productId}"]`
+    );
+    if (button) {
+      const feedback = document.createElement('div');
+      feedback.className =
+        'fixed bottom-4 right-4 z-50 rounded-md bg-black px-4 py-2 text-sm text-white shadow-lg';
+      feedback.textContent = `Added ${product.name} to cart`;
+      document.body.appendChild(feedback);
+
+      setTimeout(() => {
+        feedback.style.opacity = '0';
+        feedback.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => {
+          document.body.removeChild(feedback);
+        }, 500);
+      }, 2000);
+
+      button.classList.add('bg-black', 'text-white');
+      setTimeout(() => {
+        button.classList.remove('bg-black', 'text-white');
+      }, 500);
+    }
   };
 
   return (
