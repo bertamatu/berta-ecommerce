@@ -5,18 +5,16 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { WEB_APP_TITLE, ROUTES } from '@/app/Constants';
 import { useCart } from '@/contexts/CartContext';
+import { useWishlist } from '@/contexts/WishlistContext';
 
-// Using object destructuring and computed property names for better organization
 const { INTERIOR, GARDEN, SEARCH, ACCOUNT, WISHLIST, CART } = ROUTES;
 
-// Using arrow function with implicit return for mapping
 const createSubmenuItems = (categories: readonly string[]) =>
   categories.map((cat) => ({
     name: cat,
     href: `/products?category=${encodeURIComponent(cat)}`,
   }));
 
-// Using object property shorthand and template literals
 const categories = [
   {
     name: INTERIOR.label,
@@ -32,7 +30,6 @@ const categories = [
   },
 ];
 
-// Using array of objects with consistent structure
 const iconPaths = [
   {
     path: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
@@ -56,7 +53,6 @@ const iconPaths = [
   },
 ];
 
-// Using destructuring in function parameters and template literals for className
 const IconButton = ({
   children,
   href,
@@ -71,7 +67,6 @@ const IconButton = ({
   const pathname = usePathname();
   const isActive = pathname === href;
 
-  // Using template literals and logical operators for conditional classes
   const activeClass = isActive ? 'text-blue-600' : '';
 
   return (
@@ -82,8 +77,7 @@ const IconButton = ({
     >
       <div className="relative">
         {children}
-        {/* Using optional chaining and nullish coalescing for safer code */}
-        {badge && badge > 0 && (
+        {badge !== undefined && badge > 0 && (
           <span
             className="absolute -right-2 -top-2 flex size-5 items-center justify-center rounded-full bg-red-500 text-xs text-white"
             aria-label={`${badge} items`}
@@ -100,15 +94,14 @@ const IconButton = ({
 };
 
 const Navbar = () => {
-  // Using array destructuring for state hooks
   const [_isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const _router = useRouter();
   const { itemCount } = useCart();
+  const { itemCount: wishlistCount } = useWishlist();
 
-  // Using arrow functions and type annotations
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -119,19 +112,16 @@ const Navbar = () => {
 
     document.addEventListener('mousedown', handleClickOutside);
 
-    // Using arrow function for cleanup
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
-  // Using arrow function and dependency array
   useEffect(() => {
     setIsMenuOpen(false);
     setActiveSubmenu(null);
   }, [pathname]);
 
-  // Using arrow function with ternary operator
   const toggleSubmenu = (category: string) =>
     setActiveSubmenu((prevCategory) =>
       prevCategory === category ? null : category
@@ -146,7 +136,6 @@ const Navbar = () => {
               {WEB_APP_TITLE}
             </Link>
             <div className="ml-10 hidden space-x-8 lg:block" ref={menuRef}>
-              {/* Using destructuring in map callback */}
               {categories.map(({ name, href, submenu }) => (
                 <div
                   key={name}
@@ -180,7 +169,6 @@ const Navbar = () => {
                       </svg>
                     </button>
                   </div>
-                  {/* Fixed submenu rendering to prevent double flicker */}
                   <div
                     id={`submenu-${name}`}
                     className={`absolute z-10 mt-2 w-48 rounded-md bg-white shadow-lg transition-opacity duration-200 ${
@@ -196,7 +184,6 @@ const Navbar = () => {
                       aria-orientation="vertical"
                       aria-labelledby={`submenu-button-${name}`}
                     >
-                      {/* Using destructuring in map callback */}
                       {submenu.map(({ name: itemName, href: itemHref }) => (
                         <Link
                           key={itemName}
@@ -218,17 +205,26 @@ const Navbar = () => {
             </div>
           </div>
           <div className="flex items-center space-x-8">
-            {/* Using destructuring in map callback and spreading props */}
             {iconPaths.map(({ path, href, label }, index) => (
               <IconButton
                 key={index}
                 href={href}
                 label={label}
-                badge={label === 'Cart' ? itemCount : undefined}
+                badge={
+                  label === 'Cart'
+                    ? itemCount
+                    : label === 'Wishlist'
+                      ? wishlistCount
+                      : undefined
+                }
               >
                 <svg
                   className="size-6 transition-colors duration-200 hover:text-gray-900"
-                  fill="none"
+                  fill={
+                    label === 'Wishlist' && pathname === WISHLIST.path
+                      ? 'currentColor'
+                      : 'none'
+                  }
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   aria-hidden="true"
