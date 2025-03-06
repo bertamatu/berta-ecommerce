@@ -220,18 +220,18 @@ const HomePage = () => {
         </div>
       </section>
 
-      <section className="bg-white py-24" aria-labelledby="featured-heading">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="bg-white py-4" aria-labelledby="featured-heading">
+        <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 flex items-center justify-between">
-            <h2
+            <div
               id="featured-heading"
-              className="text-3xl font-bold text-gray-900"
+              className="text-2xl font-bold text-gray-900"
             >
               Featured Products
-            </h2>
+            </div>
             <Link
               href="/products"
-              className="font-medium text-blue-600 hover:text-blue-700"
+              className="rounded-full border border-gray-200 bg-white px-4 py-2 font-medium text-black transition-all duration-200 hover:scale-105 hover:border-gray-300"
             >
               View All →
             </Link>
