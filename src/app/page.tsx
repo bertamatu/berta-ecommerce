@@ -93,7 +93,6 @@ const ProductCard = ({
 }: ProductCardProps) => {
   const { id, name, image, category, price, discount } = product;
 
-  // Using nullish coalescing for default values
   const discountedPrice = discount > 0 ? price * (1 - discount / 100) : null;
 
   return (
@@ -185,7 +184,7 @@ const HomePage = () => {
   return (
     <main className="flex-1" suppressHydrationWarning>
       <section
-        className="relative overflow-hidden py-16 sm:py-24 md:py-32"
+        className="relative overflow-hidden py-16"
         aria-labelledby="hero-heading"
       >
         <div className="absolute inset-0">
@@ -195,14 +194,11 @@ const HomePage = () => {
           <div className="mx-auto max-w-3xl text-center">
             <h1
               id="hero-heading"
-              className="mb-4 text-4xl font-bold tracking-tight text-gray-900 md:mb-6 md:text-5xl"
+              className="text-4xl font-bold tracking-tight text-gray-900 md:mb-6 md:text-5xl"
             >
-              The Future of{' '}
-              <span className="bg-gradient-to-r from-yellow-500 to-blue-600 bg-clip-text text-transparent">
-                Shopping
-              </span>
+              The Future of Shopping
             </h1>
-            <p className="mb-8 px-4 text-lg text-gray-600 md:mb-10 md:text-xl">
+            <p className="mb-8 px-4 text-base text-gray-600 md:mb-10 md:text-lg">
               Discover our curated collection of premium products designed for
               the modern lifestyle.
             </p>
