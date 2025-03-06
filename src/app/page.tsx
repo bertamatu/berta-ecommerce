@@ -4,8 +4,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { products } from './Constants';
 import { useCart } from '@/contexts/CartContext';
+import { useToast } from '@/contexts/ToastContext';
 import { Product } from '@/types';
-import { useId } from 'react';
+import { useId, useState, useEffect } from 'react';
 
 const FEATURED_PRODUCT_IDS = [1, 3, 5];
 
@@ -252,8 +253,9 @@ const ProductCard = ({
 };
 
 const HomePage = () => {
-  const componentId = useId();
   const { addToCart } = useCart();
+  const { showToast } = useToast();
+  const [componentId] = useState(() => Math.random().toString(36).substring(7));
 
   const featuredProducts = products.filter(({ id }) =>
     FEATURED_PRODUCT_IDS.includes(id)
@@ -264,25 +266,13 @@ const HomePage = () => {
     if (!product) return;
 
     addToCart(product, 1);
+    showToast(`${product.name} added to cart`, 'success');
 
+    // Add visual feedback to the button
     const button = document.querySelector(
       `button[data-product-id="${productId}"]`
     );
     if (button) {
-      const feedback = document.createElement('div');
-      feedback.className =
-        'fixed bottom-4 right-4 z-50 rounded-md bg-black px-4 py-2 text-sm text-white shadow-lg';
-      feedback.textContent = `Added ${product.name} to cart`;
-      document.body.appendChild(feedback);
-
-      setTimeout(() => {
-        feedback.style.opacity = '0';
-        feedback.style.transition = 'opacity 0.5s ease';
-        setTimeout(() => {
-          document.body.removeChild(feedback);
-        }, 500);
-      }, 2000);
-
       button.classList.add('bg-black', 'text-white');
       setTimeout(() => {
         button.classList.remove('bg-black', 'text-white');

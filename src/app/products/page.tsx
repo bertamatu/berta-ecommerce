@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { products } from '@/app/Constants';
 import { Product } from '@/types/index';
 import { useCart } from '@/contexts/CartContext';
+import { useToast } from '@/contexts/ToastContext';
 
 // Type definitions for component props
 type CategoryFilterProps = {
@@ -249,6 +250,7 @@ const NoProductsFound = () => (
 // Component to handle search params
 const ProductsContent = () => {
   const { addToCart } = useCart();
+  const { showToast } = useToast();
   const searchParams = useSearchParams();
 
   // Using nullish coalescing operator for default values
@@ -343,8 +345,7 @@ const ProductsContent = () => {
   // Handle adding product to cart
   const handleAddToCart = (product: Product) => {
     addToCart(product, 1);
-    // Show a toast or notification here
-    alert(`Added ${product.name} to cart`);
+    showToast(`${product.name} added to cart`, 'success');
   };
 
   // Clear all filters
