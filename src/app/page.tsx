@@ -7,10 +7,8 @@ import { useCart } from '@/contexts/CartContext';
 import { Product } from '@/types';
 import { useId } from 'react';
 
-// Feature IDs for the homepage
 const FEATURED_PRODUCT_IDS = [1, 3, 5];
 
-// Type definitions for our components
 type IconProps = {
   path: string;
   bgColor: string;
@@ -29,15 +27,14 @@ type ProductCardProps = {
   priority?: boolean;
 };
 
-// Service feature data structure
 const serviceFeatures: ServiceFeatureProps[] = [
   {
     title: 'Premium Quality',
     description: 'Carefully selected products that meet our high standards.',
     icon: {
       path: 'M5 13l4 4L19 7',
-      bgColor: 'bg-blue-100',
-      textColor: 'text-blue-600',
+      bgColor: 'bg-gray-100',
+      textColor: 'text-black',
     },
   },
   {
@@ -46,8 +43,8 @@ const serviceFeatures: ServiceFeatureProps[] = [
       'Get your products delivered quickly and reliably to your doorstep.',
     icon: {
       path: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
-      bgColor: 'bg-green-100',
-      textColor: 'text-green-600',
+      bgColor: 'bg-gray-100',
+      textColor: 'text-black',
     },
   },
   {
@@ -56,21 +53,20 @@ const serviceFeatures: ServiceFeatureProps[] = [
       'Shop with confidence with our secure and encrypted payment system.',
     icon: {
       path: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
-      bgColor: 'bg-purple-100',
-      textColor: 'text-purple-600',
+      bgColor: 'bg-gray-100',
+      textColor: 'text-black',
     },
   },
 ];
 
-// Reusable component for service features
 const ServiceFeature = ({ title, description, icon }: ServiceFeatureProps) => (
   <div className="p-6 text-center">
     <div
-      className={`mx-auto mb-6 flex size-16 items-center justify-center rounded-2xl ${icon.bgColor}`}
+      className={`mx-auto mb-6 flex size-20 items-center justify-center rounded-2xl ${icon.bgColor}`}
       aria-hidden="true"
     >
       <svg
-        className={`size-8 ${icon.textColor}`}
+        className={`size-10 ${icon.textColor}`}
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -90,7 +86,6 @@ const ServiceFeature = ({ title, description, icon }: ServiceFeatureProps) => (
   </div>
 );
 
-// Reusable component for product cards
 const ProductCard = ({
   product,
   onAddToCart,
@@ -172,16 +167,13 @@ const ProductCard = ({
 };
 
 const HomePage = () => {
-  // Generate a stable ID for this component instance
   const componentId = useId();
   const { addToCart } = useCart();
 
-  // Using array methods to filter featured products
   const featuredProducts = products.filter(({ id }) =>
     FEATURED_PRODUCT_IDS.includes(id)
   );
 
-  // Using arrow function with early return pattern
   const handleAddToCart = (productId: number) => {
     const product = products.find(({ id }) => id === productId);
     if (!product) return;
@@ -249,7 +241,6 @@ const HomePage = () => {
             </Link>
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            {/* Using the ProductCard component with destructuring in map */}
             {featuredProducts.map((product, index) => (
               <ProductCard
                 key={`${componentId}-product-${product.id}`}
@@ -265,7 +256,6 @@ const HomePage = () => {
       <section className="bg-gradient-to-b from-white to-gray-50 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
-            {/* Using the ServiceFeature component with destructuring in map */}
             {serviceFeatures.map((feature) => (
               <ServiceFeature
                 key={`${componentId}-feature-${feature.title}`}
