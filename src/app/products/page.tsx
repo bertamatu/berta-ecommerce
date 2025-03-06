@@ -68,34 +68,100 @@ const ProductCard = ({
   priority = false,
 }: ProductCardProps) => {
   // Destructuring product properties
-  const { id, name, image, price, discount, description, rating } = product;
+  const { id, name, image, price, discount, description, rating, category } =
+    product;
 
   // Calculate discounted price using ternary operator
   const discountedPrice =
     discount > 0 ? (price * (1 - discount / 100)).toFixed(2) : null;
 
+  // Function to render star rating
+  const renderStars = (rating: number) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+
+    // Add full stars
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(
+        <svg
+          key={`star-${i}`}
+          className="size-4 text-yellow-400"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+        >
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+      );
+    }
+
+    // Add half star if needed
+    if (hasHalfStar) {
+      stars.push(
+        <svg
+          key="half-star"
+          className="size-4 text-yellow-400"
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="half-gradient">
+              <stop offset="50%" stopColor="currentColor" />
+              <stop offset="50%" stopColor="#D1D5DB" />
+            </linearGradient>
+          </defs>
+          <path
+            fill="url(#half-gradient)"
+            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+          />
+        </svg>
+      );
+    }
+
+    // Add empty stars to make total of 5
+    const emptyStars = 5 - stars.length;
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(
+        <svg
+          key={`empty-star-${i}`}
+          className="size-4 text-gray-300"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+        >
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+      );
+    }
+
+    return stars;
+  };
+
   return (
     <div
-      className="group relative overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 hover:shadow-lg"
+      className="group relative flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 hover:shadow-lg"
       data-testid="product-item"
     >
       <div className="relative h-[250px] w-full">
-        <Image
-          src={image}
-          alt={name}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
-          priority={priority}
-        />
-        {discount > 0 && (
-          <div className="absolute right-2 top-2 rounded bg-red-500 px-2 py-1 text-xs font-bold text-white">
-            {`${discount}% OFF`}
-          </div>
-        )}
+        <Link href={`/products/${id}`} className="block size-full">
+          <Image
+            src={image}
+            alt={name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+            priority={priority}
+          />
+          {discount > 0 && (
+            <div className="absolute right-2 top-2 rounded bg-red-500 px-2 py-1 text-xs font-bold text-white">
+              {`${discount}% OFF`}
+            </div>
+          )}
+        </Link>
       </div>
-      <div className="p-4">
-        <h3 className="mb-2 text-lg font-medium text-gray-900">
+      <div className="flex flex-1 flex-col p-4">
+        <h3 className="text-lg font-medium text-gray-900">
           <Link
             href={`/products/${id}`}
             className="hover:text-blue-600"
@@ -104,51 +170,68 @@ const ProductCard = ({
             {name}
           </Link>
         </h3>
-        <p className="mb-2 line-clamp-2 text-sm text-gray-500">{description}</p>
-        <div className="flex items-center justify-between">
-          <div>
-            {discountedPrice ? (
-              <div className="flex items-center">
+
+        <div className="mt-1 flex flex-wrap items-center justify-between">
+          <p className="text-sm text-gray-500">{category}</p>
+
+          <div
+            className="flex items-center"
+            aria-label={`Rated ${rating.toFixed(1)} out of 5 stars`}
+          >
+            <div className="flex" aria-hidden="true">
+              {renderStars(rating)}
+            </div>
+            <span className="ml-1 text-sm font-medium text-gray-600">
+              ({rating.toFixed(1)})
+            </span>
+          </div>
+        </div>
+
+        <p className="mt-2 line-clamp-2 text-sm text-gray-500">{description}</p>
+
+        <div className="mt-auto pt-4">
+          <div className="flex items-center justify-between">
+            <div>
+              {discountedPrice ? (
+                <div className="flex items-center">
+                  <span className="text-lg font-bold text-gray-900">
+                    ${discountedPrice}
+                  </span>
+                  <span className="ml-2 text-sm text-gray-500 line-through">
+                    ${price.toFixed(2)}
+                  </span>
+                </div>
+              ) : (
                 <span className="text-lg font-bold text-gray-900">
-                  ${discountedPrice}
-                </span>
-                <span className="ml-2 text-sm text-gray-500 line-through">
                   ${price.toFixed(2)}
                 </span>
-              </div>
-            ) : (
-              <span className="text-lg font-bold text-gray-900">
-                ${price.toFixed(2)}
-              </span>
-            )}
+              )}
+            </div>
           </div>
-          <div className="flex items-center">
-            <span className="mr-1 text-yellow-400">★</span>
-            <span className="text-sm text-gray-600">{rating}</span>
-          </div>
-        </div>
-        <div className="mt-2 flex items-center justify-between">
-          <button
-            onClick={() => onAddToCart(product)}
-            className="text-gray-500 hover:text-gray-700"
-            data-testid={`add-to-cart-${id}`}
-          >
-            <svg
-              className="size-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-              />
-            </svg>
-          </button>
         </div>
       </div>
+
+      {/* Full-width Add to Cart button at the bottom */}
+      <button
+        onClick={() => onAddToCart(product)}
+        className="mt-2 flex w-full items-center justify-center bg-black py-3 text-sm font-medium text-white transition-colors duration-200 hover:bg-gray-800"
+        data-testid={`add-to-cart-${id}`}
+      >
+        <svg
+          className="mr-2 size-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+          />
+        </svg>
+        Add to Cart
+      </button>
     </div>
   );
 };
